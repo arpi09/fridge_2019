@@ -1,0 +1,24 @@
+{
+  "name": "fridge",
+  "version": "1.0.0",
+  "description": "Fridge app",
+  "main": "server.js",
+  "scripts": {
+    "client-install": "npm install --prefix fridge",
+    "start": "node index.js",
+    "server": "node_modules/.bin/nodemon app.js",
+    "client": "npm start --prefix fridge",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@material-ui/core": "^4.3.0",
+    "concurrently": "^4.1.1",
+    "create-react-app": "^3.0.1",
+    "express": "^4.17.1",
+    "heroku": "^7.26.2",
+    "nodemon": "^1.19.1",
+    "sqlite3": "^4.0.9"
+  }
+}
