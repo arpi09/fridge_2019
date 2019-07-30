@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 
 class App extends Component {
@@ -47,6 +49,9 @@ class App extends Component {
               {item.name}
             </li>
           ))}
+          <Button variant="contained" color="secondary">
+            Default
+          </Button>
         </div>
     );
   }
