@@ -44,7 +44,7 @@ class App extends Component {
         <div className="container">
           {items.map((item) => (
             <li key={item.id}>
-              {item.name}asdasd
+              {item.name}
             </li>
           ))}
         </div>
