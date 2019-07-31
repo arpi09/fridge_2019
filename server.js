@@ -22,7 +22,7 @@ db.serialize(function() {
     db.run("DROP TABLE IF EXISTS groceries")
     db.run(`CREATE TABLE users (
             name      TEXT,
-            email     TEXT,
+            email     TEXT NOT NULL,
             password  TEXT,
 
             fridgeID  INT NOT NULL,
@@ -48,7 +48,7 @@ db.serialize(function() {
             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
     )`)
     db.run(`INSERT INTO fridges (size) VALUES (20)`)
-    db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "135711Ap!", 1)`)
+    db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Siri", "siri@admin.com", "hejhej", 1)`)
     db.run(`INSERT INTO groceries (name, weight, category, fridgeID) VALUES ("Milk", 1, "Dairy", 1)`)
     db.run(`INSERT INTO groceries (name, weight, category, fridgeID) VALUES ("Milk2", 1, "Dairy", 1)`)
@@ -80,28 +80,24 @@ app.get('/api/grocery', (req, res) => {
   });
 });
 
-app.get("/api/login/:username/:password", (req, res, next) => {
-    var sql = "select password FROM users WHERE name=?"
+app.get("/api/login/:username", (req, res, next) => {
     var params = [req.params.username]
+    var sql = "select * FROM users WHERE name=?"
     db.get(sql, params, (err, row) => {
+        console.log(err)
         console.log(params)
+        console.log(row)
         if (err) {
           res.status(400).json({"error":err.message});
-          return;
+          return
         }
-        if (req.params.password === row.password) {
-          res.json({
-              "message":"success",
-              "data": null
-          })
-        } else {
-          res.json({
-              "message":"wrong password",
-              "data": null
-          })
-          return;
-        }
+        res.json({
+            "message":"success",
+            "data": row
+        })
+        return
       });
+
 });
 
 //build mode
