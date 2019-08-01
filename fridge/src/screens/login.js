@@ -48,39 +48,10 @@ class Login extends Component {
     this.setState({
       isLoading: true,
     });
-    var CryptoJS = require("crypto-js");
-
-    // Encrypt
-    // var ciphertext = CryptoJS.AES.encrypt(this.state.password, 'secret key 123');
-    fetch('/api/login/' + this.state.email)
-      .then(res => res.json())
-      .then(result => {
-        if (result.data){
-          console.log(result.data.password)
-          var bytes = CryptoJS.AES.decrypt(result.data.password, 'secret key 123')
-          var plaintext = bytes.toString(CryptoJS.enc.Utf8)
-          if (plaintext == this.state.password) {
-            this.props.login()
-            this.setState({
-              isLoading: false,
-            })
-          } else {
-            alert("Wrong username or password!")
-          }
-        } else {
-          alert("Wrong username or password!")
-        }
-      },
-        (error) => {
-          console.log("ERROR!")
-          this.setState({
-            isLoading: false,
-            error
-          });
-        }
-      ).then(() => {
-        this.props.history.push('/home')
-      })
+    await this.props.login(this.state.password)
+    if (this.props.logedIn) {
+      this.props.history.push('/home')
+    }
   }
 
   render() {

@@ -6,6 +6,7 @@ import HomeScreen from '../screens/home'
 
 const mapStateToProps = state => ({
   logedIn: state.loginReducer.logedIn,
+  data: state.loginReducer.data,
 })
 
 function mapDispatchToProps(dispatch) {

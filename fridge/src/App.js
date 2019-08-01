@@ -15,7 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Login from './containers/login'
 import Home from './containers/home'
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer, applyMiddleware(thunk))
 const persistor = persistStore(store)
 
 class App extends Component {

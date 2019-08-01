@@ -2,14 +2,22 @@ import moment from 'moment'
 
 const initialState = {
   logedIn: false,
+  data: null
 }
 
 const loginReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'LOGIN':
+    case 'LOGIN_SUCCESS':
+      const items = action.data
       return {
         ...state,
         logedIn: true,
+        data: items
+      }
+    case 'LOGIN_ERROR':
+      return {
+        ...state,
+        logedIn: false,
       }
     case 'LOGOUT':
       return {
