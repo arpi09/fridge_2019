@@ -39,11 +39,11 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      groceryName: null,
-      groceryWeight: null,
-      groceryCategory: null,
-      groceryExpireDate: null,
-      fridgeId: null,
+      groceryName: "",
+      groceryWeight: 0,
+      groceryCategory: "",
+      groceryExpireDate: "",
+      fridgeId: "",
       columns: [
         {
           name: "groceryName",
@@ -83,6 +83,17 @@ class Home extends Component {
         pagination: false
       },
       open: false,
+      categories: [
+        {
+          value: "Dairy",
+        },
+        {
+          value: "Meat",
+        },
+        {
+          value: "Vegetable",
+        },
+      ]
     }
   }
 
@@ -102,9 +113,11 @@ class Home extends Component {
   }
 
   async addItem() {
+    const { groceryName, groceryWeight, groceryCategory, fridgeId, groceryExpireDate } = this.state
     console.log("ADDIN ITEM")
-    await this.props.addGroceries("Test", 23, "TestCat", 1, "2020-20-12")
+    await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, fridgeId, groceryExpireDate)
     this.props.getGroceries(1)
+    this.handleForm()
   }
 
   async deleteItem() {
@@ -112,14 +125,11 @@ class Home extends Component {
     this.props.getGroceries(1)
   }
 
-  openForm() {
+  handleForm() {
     this.setState({
-      open: true
+      open: !this.state.open
     })
-  }
-
-  handleTextFieldChange(fieldName) {
-
+    console.log(this.state.groceryName)
   }
 
   getMuiTheme = () => createMuiTheme({
@@ -138,7 +148,7 @@ class Home extends Component {
   })
 
   render() {
-    const { } = this.state;
+    const { } = this.state
 
     return(
       <div className="container">
@@ -149,7 +159,7 @@ class Home extends Component {
               style={{ minHeight: '100vh' }}
               >
           <p>asdasdas</p>
-          <Button variant="contained" color="primary" style={button} onClick={() => { this.openForm() }}>
+          <Button variant="contained" color="primary" style={button} onClick={() => { this.handleForm() }}>
             Add
           </Button>
           <Button variant="contained" color="primary" style={button} onClick={() => { this.deleteItem() }}>
@@ -182,14 +192,7 @@ class Home extends Component {
           margin="normal"
           variant="outlined"
           value={this.state.groceryName}
-          onChange={this.handleTextFieldChange("name")}
-          onKeyPress={(ev) => {
-            console.log(`Pressed keyCode ${ev.key}`);
-            if (ev.key === 'Enter') {
-              console.log("HIT ENTER!")
-              ev.preventDefault();
-            }
-          }}
+          onChange={e => this.setState({ groceryName: e.target.value })}
          />
         <TextField
           margin="dense"
@@ -199,8 +202,11 @@ class Home extends Component {
           fullWidth
           margin="normal"
           variant="outlined"
+          value={this.state.groceryWeight}
+          onChange={e => this.setState({ groceryWeight: e.target.value })}
         />
         <TextField
+          select
           margin="dense"
           id="category"
           label="Category"
@@ -208,7 +214,23 @@ class Home extends Component {
           fullWidth
           margin="normal"
           variant="outlined"
-        />
+          value={this.state.groceryCategory}
+          onChange={e => this.setState({ groceryCategory: e.target.value })}
+          SelectProps={{
+            MenuProps: {
+              style: {
+                width: 150,
+                fontSize: '1.1em'
+              },
+            },
+          }}
+        >
+        {this.state.categories.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+        </TextField>
         <TextField
           margin="dense"
           id="expireDate"
@@ -218,6 +240,8 @@ class Home extends Component {
           InputLabelProps={{ shrink: true }}
           margin="normal"
           variant="outlined"
+          value={this.state.groceryExpireDate}
+          onChange={e => this.setState({ groceryExpireDate: e.target.value })}
         />
         <TextField
           margin="dense"
@@ -227,13 +251,15 @@ class Home extends Component {
           fullWidth
           margin="normal"
           variant="outlined"
+          value={this.state.fridgeId}
+          onChange={e => this.setState({ fridgeId: e.target.value })}
          />
       </DialogContent>
       <DialogActions>
-        <Button color="primary" onClick={() => { this.setState({ open: !this.state.open }) }}>
+        <Button color="primary" onClick={() => { this.handleForm() }}>
           Cancel
         </Button>
-        <Button color="primary" onClick={() => { this.setState({ open: !this.state.open }) }}>
+        <Button color="primary" onClick={() => { this.addItem() }}>
           Save
         </Button>
       </DialogActions>

@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 const port = process.env.PORT || 5000;
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(':memory:')
+var db = new sqlite3.Database('./database.sqlite')
 
 //Static file declaration
 app.use(express.static(path.join(__dirname, 'fridge/public')));
@@ -16,48 +16,48 @@ if(process.env.NODE_ENV === 'production') {
   })
 }
 
-db.serialize(function() {
-    db.run("DROP TABLE IF EXISTS users")
-    db.run("DROP TABLE IF EXISTS fridges")
-    db.run("DROP TABLE IF EXISTS groceries")
-    db.run(`CREATE TABLE users (
-            name      TEXT,
-            email     TEXT NOT NULL,
-            password  TEXT,
-
-            fridgeID  INT,
-
-            PRIMARY KEY (email),
-            FOREIGN KEY (fridgeID) REFERENCES fridges(id)
-    )`)
-    db.run(`CREATE TABLE fridges (
-            id        INT,
-            size      INT,
-
-            PRIMARY KEY (id)
-    )`)
-    db.run(`CREATE TABLE groceries (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            groceryName TEXT,
-            weight      INT,
-            category    TEXT,
-            expireDate  DATE,
-
-            fridgeID    INT,
-
-            FOREIGN KEY (fridgeID) REFERENCES fridges(id)
-    )`)
-    db.run(`INSERT INTO fridges (size) VALUES (20)`)
-    db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
-    db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Siri", "siri@admin.com", "hejhej", 1)`)
-    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk", 1, "Dairy", 1, "2020-01-01")`)
-    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
-    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 2, "Dairy", 1, "2020-01-01")`)
-    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 10, "Dairy", 1, "2020-01-01")`)
-    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 1, "Dairy", 1, "2020-01-01")`)
-    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 1, "Meat", 1, "2020-01-01")`)
-    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
-});
+// db.serialize(function() {
+//     db.run("DROP TABLE IF EXISTS users")
+//     db.run("DROP TABLE IF EXISTS fridges")
+//     db.run("DROP TABLE IF EXISTS groceries")
+//     db.run(`CREATE TABLE IF NOT EXISTS users (
+//             name      TEXT,
+//             email     TEXT NOT NULL,
+//             password  TEXT,
+//
+//             fridgeID  INT,
+//
+//             PRIMARY KEY (email),
+//             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
+//     )`)
+//     db.run(`CREATE TABLE IF NOT EXISTS fridges (
+//             id        INT,
+//             size      INT,
+//
+//             PRIMARY KEY (id)
+//     )`)
+//     db.run(`CREATE TABLE IF NOT EXISTS groceries (
+//             id          INTEGER PRIMARY KEY AUTOINCREMENT,
+//             groceryName TEXT,
+//             weight      INT,
+//             category    TEXT,
+//             expireDate  DATE,
+//
+//             fridgeID    INT,
+//
+//             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
+//     )`)
+//     db.run(`INSERT INTO fridges (size) VALUES (20)`)
+//     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
+//     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Siri", "siri@admin.com", "hejhej", 1)`)
+//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk", 1, "Dairy", 1, "2020-01-01")`)
+//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
+//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 2, "Dairy", 1, "2020-01-01")`)
+//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 10, "Dairy", 1, "2020-01-01")`)
+//     // db.run(`INSERT INTOss groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 1, "Dairy", 1, "2020-01-01")`)
+//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 1, "Meat", 1, "2020-01-01")`)
+//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
+// });
 
 app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, res) => {
   var params = [req.params.name, req.params.weight, req.params.category, req.params.fridgeID, req.params.expiredate]
@@ -77,7 +77,7 @@ app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, r
   });
 });
 
-app.del('/api/groceries/:fridgeID', function(req, res) {
+app.delete('/api/groceries/:fridgeID', function(req, res) {
   var params = [req.params.fridgeID]
   console.log(params)
   var sql = `DELETE FROM groceries WHERE id=?`
