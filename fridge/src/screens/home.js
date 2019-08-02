@@ -80,7 +80,14 @@ class Home extends Component {
       ],
       tableOptions: {
         filterType: 'checkbox',
-        pagination: false
+        pagination: false,
+        customToolbar: () => {
+          return (
+            <Button color="primary" onClick={() => { this.handleForm() }}>
+              Cancel
+            </Button>
+          );
+        }
       },
       open: false,
       categories: [
@@ -170,7 +177,7 @@ class Home extends Component {
           </Button>
           <MuiThemeProvider theme={this.getMuiTheme()}>
           <MUIDataTable
-            title={"Employee List"}
+            title={"Your Fridge"}
             data={this.props.groceries}
             columns={this.state.columns}
             options={this.state.tableOptions}
