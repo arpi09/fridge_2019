@@ -35,7 +35,3 @@ export const login = (password) => (dispatch) => {
       }
     )
 }
-
-function getFridgeData(dispatch, result) {
-  dispatch(fetchLoginSuccess(result.data))
-}

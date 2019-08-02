@@ -37,7 +37,7 @@ db.serialize(function() {
             PRIMARY KEY (id)
     )`)
     db.run(`CREATE TABLE groceries (
-            id          INT,
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
             groceryName TEXT,
             weight      INT,
             category    TEXT,
@@ -45,27 +45,26 @@ db.serialize(function() {
 
             fridgeID    INT,
 
-            PRIMARY KEY (id)
             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
     )`)
     db.run(`INSERT INTO fridges (size) VALUES (20)`)
     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Siri", "siri@admin.com", "hejhej", 1)`)
-    db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk", 1, "Dairy", 1, "2020-01-01")`)
-    db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
-    db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 2, "Dairy", 1, "2020-01-01")`)
-    db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 10, "Dairy", 1, "2020-01-01")`)
-    db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 1, "Dairy", 1, "2020-01-01")`)
-    db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 1, "Meat", 1, "2020-01-01")`)
-    db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
+    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk", 1, "Dairy", 1, "2020-01-01")`)
+    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
+    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 2, "Dairy", 1, "2020-01-01")`)
+    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 10, "Dairy", 1, "2020-01-01")`)
+    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 1, "Dairy", 1, "2020-01-01")`)
+    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 1, "Meat", 1, "2020-01-01")`)
+    // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
 });
 
 app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, res) => {
   var params = [req.params.name, req.params.weight, req.params.category, req.params.fridgeID, req.params.expiredate]
   console.log(params)
   var sql = `INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES (?,?,?,?,?)`
-  db.run(sql, params, (err, row) => {
-    console.log(row)
+  db.run(sql, params, function (err) {
+    console.log(this)
     if (err) {
       console.log(err)
       res.status(400).json({"error":err.message});
@@ -73,13 +72,33 @@ app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, r
     }
     res.json({
         "message":"success",
-        "data":row
+        "data": this.lastID
     })
   });
 });
 
-app.get('/api/grocery', (req, res) => {
-  db.all("SELECT * FROM groceries", function(err, row){
+app.del('/api/groceries/:fridgeID', function(req, res) {
+  var params = [req.params.fridgeID]
+  console.log(params)
+  var sql = `DELETE FROM groceries WHERE id=?`
+  db.run(sql, params, function (err, row) {
+    console.log(this)
+    if (err) {
+      console.log(err)
+      res.status(400).json({"error":err.message});
+      return;
+    }
+    res.json({
+        "message":"success",
+        "data": this.lastID
+    })
+  });
+});
+
+app.get('/api/groceries/:id', (req, res) => {
+  var params = [req.params.id]
+  db.all("SELECT * FROM groceries WHERE fridgeID=?", params, function(err, row){
+    console.log(row)
     if (err) {
       res.status(400).json({"error":err.message});
       return;
@@ -94,13 +113,9 @@ app.get('/api/grocery', (req, res) => {
 app.get("/api/login/:username", (req, res, next) => {
     var params = [req.params.username]
     var sql = `select *
-               FROM   groceries
-               JOIN   users
-               USING  (fridgeID)
+               FROM   users
                WHERE  name=?`
     db.all(sql, params, (err, row) => {
-        console.log(err)
-        console.log(params)
         console.log(row)
         if (err) {
           res.status(400).json({"error":err.message});

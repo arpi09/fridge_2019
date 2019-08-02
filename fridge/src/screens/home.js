@@ -39,11 +39,11 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
-      isLoading: false,
-      items: [],
-      email: null,
-      password: null,
+      groceryName: null,
+      groceryWeight: null,
+      groceryCategory: null,
+      groceryExpireDate: null,
+      fridgeId: null,
       columns: [
         {
           name: "groceryName",
@@ -78,21 +78,17 @@ class Home extends Component {
           }
          },
       ],
-      data: [],
       tableOptions: {
         filterType: 'checkbox',
         pagination: false
       },
-      value: '',
       open: false,
     }
   }
 
   componentDidMount() {
-    console.log(this.props.logedIn)
-    console.log(this.props.data)
     this.setState({
-      data: this.props.data
+      data: this.props.groceries
     })
     if (!this.props.logedIn) {
       this.props.history.push('/')
@@ -106,31 +102,24 @@ class Home extends Component {
   }
 
   async addItem() {
-    fetch('/api/groceries/Water/100/Water/2021-02-02/1', {
-      method: 'post'
-    })
-      .then(res => res.json())
-      .then(result => {
-        console.log(result)
-        this.setState({
-          open: true,
-          value: {groceryName: "ashdoaisdhs"}
-        })
-      },
-        (error) => {
-          console.log("ERROR!")
-        })
-    this.setState({
-      value: {groceryName: "ashdoaisdhs"}
-    })
-    this.setState(state => {
-      const data = [...state.data, state.value];
+    console.log("ADDIN ITEM")
+    await this.props.addGroceries("Test", 23, "TestCat", 1, "2020-20-12")
+    this.props.getGroceries(1)
+  }
 
-      return {
-        data,
-        value: '',
-      };
-    });
+  async deleteItem() {
+    await this.props.removeGroceries(2)
+    this.props.getGroceries(1)
+  }
+
+  openForm() {
+    this.setState({
+      open: true
+    })
+  }
+
+  handleTextFieldChange(fieldName) {
+
   }
 
   getMuiTheme = () => createMuiTheme({
@@ -149,7 +138,7 @@ class Home extends Component {
   })
 
   render() {
-    const { error, isLoaded, items } = this.state;
+    const { } = this.state;
 
     return(
       <div className="container">
@@ -160,45 +149,95 @@ class Home extends Component {
               style={{ minHeight: '100vh' }}
               >
           <p>asdasdas</p>
+          <Button variant="contained" color="primary" style={button} onClick={() => { this.openForm() }}>
+            Add
+          </Button>
+          <Button variant="contained" color="primary" style={button} onClick={() => { this.deleteItem() }}>
+            Delete
+          </Button>
           <Button variant="contained" color="primary" style={button} onClick={() => { this.logout() }}>
             Logout
           </Button>
           <MuiThemeProvider theme={this.getMuiTheme()}>
           <MUIDataTable
             title={"Employee List"}
-            data={this.state.data}
+            data={this.props.groceries}
             columns={this.state.columns}
             options={this.state.tableOptions}
           />
           </MuiThemeProvider>
-          <Button variant="contained" color="primary" style={button} onClick={() => { this.addItem() }}>
-            Add
-          </Button>
           <Dialog open={this.state.open} aria-labelledby="form-dialog-title">
-       <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+       <DialogTitle id="form-dialog-title">Add product</DialogTitle>
        <DialogContent>
          <DialogContentText>
-           To subscribe to this website, please enter your email address here. We will send updates
-           occasionally.
+           Enter the product information down below.
          </DialogContentText>
          <TextField
-           autoFocus
-           margin="dense"
-           id="name"
-           label="Email Address"
-           type="email"
-           fullWidth
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Name"
+          type="text"
+          fullWidth
+          margin="normal"
+          variant="outlined"
+          value={this.state.groceryName}
+          onChange={this.handleTextFieldChange("name")}
+          onKeyPress={(ev) => {
+            console.log(`Pressed keyCode ${ev.key}`);
+            if (ev.key === 'Enter') {
+              console.log("HIT ENTER!")
+              ev.preventDefault();
+            }
+          }}
          />
-       </DialogContent>
-       <DialogActions>
-         <Button color="primary">
-           Cancel
-         </Button>
-         <Button color="primary">
-           Subscribe
-         </Button>
-       </DialogActions>
-     </Dialog>
+        <TextField
+          margin="dense"
+          id="weight"
+          label="Weight"
+          type="number"
+          fullWidth
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          margin="dense"
+          id="category"
+          label="Category"
+          type="text"
+          fullWidth
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          margin="dense"
+          id="expireDate"
+          label="Expire Date"
+          type="date"
+          fullWidth
+          InputLabelProps={{ shrink: true }}
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          margin="dense"
+          id="fridge"
+          label="Fridge"
+          type="text"
+          fullWidth
+          margin="normal"
+          variant="outlined"
+         />
+      </DialogContent>
+      <DialogActions>
+        <Button color="primary" onClick={() => { this.setState({ open: !this.state.open }) }}>
+          Cancel
+        </Button>
+        <Button color="primary" onClick={() => { this.setState({ open: !this.state.open }) }}>
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
         </Grid>
       </div>
     )
