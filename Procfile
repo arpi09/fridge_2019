@@ -1,1 +1,1 @@
-web: node ./fridge/src/index.js
+web: npm run dev
