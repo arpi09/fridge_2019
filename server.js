@@ -6,13 +6,14 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./database.sqlite')
 
 //Static file declaration
-app.use(express.static(path.join(__dirname, 'fridge/public')));
+app.use(express.static(path.join(__dirname, '/fridge/public')));
+print(path.join(__dirname, '/fridge/public'))
 
 //production mode
 if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'fridge/public')));
+  app.use(express.static(path.join(__dirname, '/fridge/public')));
   app.get('*', (req, res) => {
-    res.sendfile(path.join(__dirname = 'fridge/public/index.html'));
+    res.sendfile(path.join(__dirname = '/fridge/public/index.html'));
   })
 }
 
