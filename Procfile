@@ -1,1 +1,1 @@
-web: node server.js
+web: npm run client-install && npm run dev
