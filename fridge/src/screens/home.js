@@ -6,12 +6,13 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import { makeStyles } from '@material-ui/core/styles'
 import { forwardRef } from 'react'
 import MUIDataTable from "mui-datatables"
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import CountUp from 'react-countup'
 
 
 
@@ -30,15 +31,31 @@ const styles = {
     width: '80%',
     minHeight: '80vh',
   },
+  numbers: {
+    bottom: 0,
+    fontSize: 70,
+  },
+  numbersBig: {
+    bottom: 0,
+    fontSize: 100,
+  },
+  headerText: {
+    bottom: 0,
+    fontSize: 14,
+    textAlign: 'center',
+  }
 }
 
-const { button, textField, table } = styles
+const { button, textField, table, numbers, numbersBig, headerText } = styles
 
 class Home extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      test: [{id: 1, groceryName: 'Test', weight: 2, category: 'test', expireDate: '2232323', }],
+      out: 0,
+      close: 0,
       groceryName: "",
       groceryWeight: 0,
       groceryCategory: "",
@@ -73,18 +90,26 @@ class Home extends Component {
           name: "status",
           label: "Status",
           options: {
+            sortDirection: 'asc',
             filter: false,
-            sort: false,
+            sort: true,
           }
          },
       ],
       tableOptions: {
+        onRowsDelete: (rowsDeleted) => {
+          for (let i = 0; i < rowsDeleted.data.length; i++) {
+            this.props.removeGroceries(this.props.groceries[rowsDeleted.data[i].dataIndex].id)
+          }
+        },
         filterType: 'checkbox',
         pagination: false,
+        print: false,
+        download: false,
         customToolbar: () => {
           return (
             <Button color="primary" onClick={() => { this.handleForm() }}>
-              Cancel
+              ADD
             </Button>
           );
         }
@@ -104,7 +129,8 @@ class Home extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.getGroceries(1)
     this.setState({
       data: this.props.groceries
     })
@@ -123,13 +149,20 @@ class Home extends Component {
     const { groceryName, groceryWeight, groceryCategory, fridgeId, groceryExpireDate } = this.state
     console.log("ADDIN ITEM")
     await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, fridgeId, groceryExpireDate)
-    this.props.getGroceries(1)
+    this.fetchGroceries()
     this.handleForm()
   }
 
   async deleteItem() {
-    await this.props.removeGroceries(2)
-    this.props.getGroceries(1)
+    await this.props.removeGroceries(3)
+    this.fetchGroceries()
+  }
+
+  async fetchGroceries() {
+    await this.props.getGroceries(1)
+    this.setState({
+      data: this.props.groceries
+    })
   }
 
   handleForm() {
@@ -154,24 +187,64 @@ class Home extends Component {
     }
   })
 
+  addProgressBar() {
+    for(let i = 0; i < this.props.groceries.length; i++) {
+      const today = Date.now()
+      const currentDate = new Date(this.props.groceries[i]['expireDate'])
+      const diffTime = currentDate - today
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+      if (diffDays < 0) {
+        this.props.groceries[i]['status'] = 0
+      } else {
+        this.props.groceries[i]['status'] = diffDays
+      }
+    }
+  }
+
   render() {
     const { } = this.state
+
+    this.addProgressBar()
+
+    console.log(this.props.groceries)
 
     return(
       <div className="container">
         <Grid container
+              direction="row"
+              justify="center"
+              alignItems="center"
+              style={{minHeight: '100vh', position: 'fixed'}}
+              >
+          <Grid
+                direction="row"
+                alignItems="center"
+                style={{minWidth: '20%', textAlign: 'center'}}
+                >
+            <CountUp style={numbers} end={this.state.close} duration={2}/>
+            <p style={headerText}>Close</p>
+          </Grid>
+          <Grid
+                direction="column"
+                style={{minWidth: '20%', textAlign: 'center', height: 198}}
+                >
+            <CountUp style={numbersBig} end={this.props.groceries.length} duration={2}/>
+            <p style={headerText}>Total groceries</p>
+          </Grid>
+          <Grid
+                direction="column"
+                style={{minWidth: '20%', textAlign: 'center'}}
+                >
+            <CountUp style={numbers} end={this.state.out} duration={2}/>
+            <p style={headerText}>Out</p>
+          </Grid>
+        </Grid>
+        <Grid container
               direction="column"
               justify="center"
               alignItems="center"
-              style={{ minHeight: '100vh' }}
+              style={{ minHeight: '100vh', top: '105vh', position: 'relative', backgroundColor: '#82b1bf', boxShadow: "0px -4px 7px -3px rgba(0,0,0,0.46)"}}
               >
-          <p>asdasdas</p>
-          <Button variant="contained" color="primary" style={button} onClick={() => { this.handleForm() }}>
-            Add
-          </Button>
-          <Button variant="contained" color="primary" style={button} onClick={() => { this.deleteItem() }}>
-            Delete
-          </Button>
           <Button variant="contained" color="primary" style={button} onClick={() => { this.logout() }}>
             Logout
           </Button>

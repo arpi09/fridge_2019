@@ -48,6 +48,7 @@ class Login extends Component {
     this.setState({
       isLoading: true,
     });
+    console.log(this.state.password)
     await this.props.login(this.state.password)
     if (this.props.logedIn) {
       this.props.history.push('/home')

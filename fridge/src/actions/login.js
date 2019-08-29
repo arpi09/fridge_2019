@@ -17,7 +17,7 @@ export const login = (password) => (dispatch) => {
     .then(res => res.json())
     .then(result => {
       if (result.data){
-        console.log(result.data[0])
+        console.log(result)
         var bytes = CryptoJS.AES.decrypt(result.data[0].password, 'secret key 123')
         var plaintext = bytes.toString(CryptoJS.enc.Utf8)
         if (plaintext == password) {
