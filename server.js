@@ -8,7 +8,7 @@ var db = new sqlite3.Database('./database.sqlite')
 app.use(express.static(path.join(__dirname, 'fridge/build')))
 
 app.get('/*', function(req, res) {
-    res.sendFile('./fridge/public/index.html');
+    res.sendFile(path.join(__dirname, "./fridge/build/index.html"))
 })
 
 // db.serialize(function() {
