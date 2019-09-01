@@ -5,16 +5,7 @@ const port = process.env.PORT || 5000;
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./database.sqlite')
 
-//Static file declaration
-app.use(express.static(path.join(__dirname, '/fridge/public')));
-
-//production mode
-if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '/fridge/public')));
-  app.get('*', (req, res) => {
-    res.sendfile(path.join(__dirname = '/fridge/public/index.html'));
-  })
-}
+app.use(express.static(path.join(__dirname, 'fridge/build')))
 
 // db.serialize(function() {
 //     db.run("DROP TABLE IF EXISTS users")
