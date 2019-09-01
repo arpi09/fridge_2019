@@ -7,6 +7,10 @@ var db = new sqlite3.Database('./database.sqlite')
 
 app.use(express.static(path.join(__dirname, 'fridge/build')))
 
+app.get('/*', function(req, res) {
+    res.sendFile('./fridge/public/index.html');
+})
+
 // db.serialize(function() {
 //     db.run("DROP TABLE IF EXISTS users")
 //     db.run("DROP TABLE IF EXISTS fridges")
