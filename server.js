@@ -7,7 +7,6 @@ var db = new sqlite3.Database('./database.sqlite')
 
 //Static file declaration
 app.use(express.static(path.join(__dirname, '/fridge/public')));
-console.log(path.join(__dirname, '/fridge/public'))
 
 //production mode
 if(process.env.NODE_ENV === 'production') {

@@ -9,7 +9,7 @@
     "server": "node_modules/.bin/nodemon app.js",
     "client": "npm start --prefix fridge",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix fridge && npm run build --prefix fridge"
+    "heroku-postbuild": "cd fridge && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
