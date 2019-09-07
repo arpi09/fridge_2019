@@ -23,8 +23,8 @@ const styles = {
   button: {
     border: 0,
     borderRadius: 3,
-    color: 'white',
-    backgroundColor: '#2F323A',
+    color: '#283048',
+    backgroundColor: '#FAFFFD',
     borderRadius: 30,
     height: 48,
     marginTop: 40,
@@ -38,10 +38,12 @@ const styles = {
   numbers: {
     bottom: 0,
     fontSize: 70,
+    color: '#283048'
   },
   numbersBig: {
     bottom: 0,
     fontSize: 100,
+    color: '#283048'
   },
   headerText: {
     bottom: 0,
@@ -112,7 +114,7 @@ class Home extends Component {
         download: false,
         customToolbar: () => {
           return (
-            <Button color="primary" onClick={() => { this.handleForm() }}>
+            <Button style={{color: "#3C91E6"}} onClick={() => { this.handleForm() }}>
               ADD
             </Button>
           );
@@ -178,12 +180,22 @@ class Home extends Component {
 
   getMuiTheme = () => createMuiTheme({
     overrides: {
+      MuiTableRow: {
+        root: {
+          height: 70,
+        }
+      },
+      MuiTableCell: {
+        root: {
+          borderBottom: 0
+        }
+      },
       MuiPaper: {
         root: {
           width: '80%',
         },
         rounded: {
-          borderRadius: 25, 
+          borderRadius: 25,
         }
       },
       MUIDataTableToolbarSelect : {
@@ -253,7 +265,7 @@ class Home extends Component {
               direction="column"
               justify="center"
               alignItems="center"
-              style={{ minHeight: '100vh', top: '105vh', position: 'relative', background: 'linear-gradient(to top right, #DAE2F8, #D6A4A4)', boxShadow: "0px -4px 7px -3px rgba(0,0,0,0.46)"}}
+              style={{ minHeight: '100vh', top: '105vh', position: 'relative', background: 'linear-gradient(to bottom left, #283048, #859398)', boxShadow: "0px -4px 7px -3px rgba(0,0,0,0.46)"}}
               >
           <MuiThemeProvider theme={this.getMuiTheme()}>
           <MUIDataTable
