@@ -24,8 +24,12 @@ const styles = {
     border: 0,
     borderRadius: 3,
     color: 'white',
+    backgroundColor: '#2F323A',
+    borderRadius: 30,
     height: 48,
-    margin: 10,
+    marginTop: 40,
+    marginRight: 70,
+    width: 120,
   },
   table: {
     width: '80%',
@@ -176,7 +180,10 @@ class Home extends Component {
     overrides: {
       MuiPaper: {
         root: {
-          width: '80%'
+          width: '80%',
+        },
+        rounded: {
+          borderRadius: 25, 
         }
       },
       MUIDataTableToolbarSelect : {
@@ -210,6 +217,9 @@ class Home extends Component {
 
     return(
       <div className="container">
+        <Grid style={{height: '10vh', width: '100%' , position: 'fixed', top: 0, left: 0, textAlign: 'right', zIndex: 100}}><Button variant="contained" color="primary" style={button} onClick={() => { this.logout() }}>
+          Logout
+        </Button></Grid>
         <Grid container
               direction="row"
               justify="center"
@@ -243,11 +253,8 @@ class Home extends Component {
               direction="column"
               justify="center"
               alignItems="center"
-              style={{ minHeight: '100vh', top: '105vh', position: 'relative', backgroundColor: '#82b1bf', boxShadow: "0px -4px 7px -3px rgba(0,0,0,0.46)"}}
+              style={{ minHeight: '100vh', top: '105vh', position: 'relative', background: 'linear-gradient(to top right, #DAE2F8, #D6A4A4)', boxShadow: "0px -4px 7px -3px rgba(0,0,0,0.46)"}}
               >
-          <Button variant="contained" color="primary" style={button} onClick={() => { this.logout() }}>
-            Logout
-          </Button>
           <MuiThemeProvider theme={this.getMuiTheme()}>
           <MUIDataTable
             title={"Your Fridge"}
