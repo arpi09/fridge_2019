@@ -7,11 +7,12 @@ var db = new sqlite3.Database('./database.sqlite')
 
 app.use(express.static(path.join(__dirname, 'fridge/build')))
 
-app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname, "./fridge/build/index.html"))
-})
+// app.get('/*', function(req, res) {
+//     res.sendFile(path.join(__dirname, "./fridge/public/index.html"))
+// })
 
 // db.serialize(function() {
+//     console.log("oiaheoiawehwih")
 //     db.run("DROP TABLE IF EXISTS users")
 //     db.run("DROP TABLE IF EXISTS fridges")
 //     db.run("DROP TABLE IF EXISTS groceries")
@@ -45,13 +46,13 @@ app.get('/*', function(req, res) {
 //     db.run(`INSERT INTO fridges (size) VALUES (20)`)
 //     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
 //     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Siri", "siri@admin.com", "hejhej", 1)`)
-//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk", 1, "Dairy", 1, "2020-01-01")`)
-//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
-//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 2, "Dairy", 1, "2020-01-01")`)
-//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 10, "Dairy", 1, "2020-01-01")`)
-//     // db.run(`INSERT INTOss groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 1, "Dairy", 1, "2020-01-01")`)
-//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 1, "Meat", 1, "2020-01-01")`)
-//     // db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
+//     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk", 1, "Dairy", 1, "2020-01-01")`)
+//     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
+//     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 2, "Dairy", 1, "2020-01-01")`)
+//     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 10, "Dairy", 1, "2020-01-01")`)
+//     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 1, "Dairy", 1, "2020-01-01")`)
+//     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 1, "Meat", 1, "2020-01-01")`)
+//     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
 // });
 
 app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, res) => {
@@ -113,7 +114,8 @@ app.get("/api/login/:username", (req, res, next) => {
     db.all(sql, params, (err, row) => {
         console.log(row)
         if (err) {
-          res.status(400).json({"error":err.message});
+          res.status(400).json({"error":err.message})
+          console.log(err)
           return
         }
         res.json({
