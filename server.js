@@ -8,7 +8,7 @@ var db = new sqlite3.Database('./database.sqlite')
 app.use(express.static(path.join(__dirname, 'fridge/build')))
 
 // app.get('/*', function(req, res) {
-//     res.sendFile(path.join(__dirname, "./fridge/public/index.html"))
+//     res.sendFile(path.join(__dirname, "fridge/build/index.html"))
 // })
 
 // db.serialize(function() {
@@ -124,11 +124,18 @@ app.get("/api/login/:username", (req, res, next) => {
         })
         return
       });
-
 });
 
 //build mode
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/fridge/public/index.html'));
+})
+
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname+'/fridge/public/index.html'));
+})
+
+app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname+'/fridge/public/index.html'));
 })
 
