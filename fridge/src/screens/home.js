@@ -154,7 +154,7 @@ class Home extends Component {
   async addItem() {
     const { groceryName, groceryWeight, groceryCategory, fridgeId, groceryExpireDate } = this.state
     console.log("ADDIN ITEM")
-    await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, fridgeId, groceryExpireDate)
+    await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, 1, groceryExpireDate)
     this.fetchGroceries()
     this.handleForm()
   }
@@ -265,7 +265,7 @@ class Home extends Component {
               direction="column"
               justify="center"
               alignItems="center"
-              style={{ minHeight: '100vh', top: '105vh', position: 'relative', background: 'linear-gradient(to bottom left, #283048, #859398)', boxShadow: "0px -4px 7px -3px rgba(0,0,0,0.46)"}}
+              style={{ minHeight: '100vh', top: '105vh', position: 'relative', background: 'linear-gradient(to bottom left, #859398, #98858A)', boxShadow: "0px -4px 7px -3px rgba(0,0,0,0.46)"}}
               >
           <MuiThemeProvider theme={this.getMuiTheme()}>
           <MUIDataTable
@@ -342,17 +342,6 @@ class Home extends Component {
           value={this.state.groceryExpireDate}
           onChange={e => this.setState({ groceryExpireDate: e.target.value })}
         />
-        <TextField
-          margin="dense"
-          id="fridge"
-          label="Fridge"
-          type="text"
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          value={this.state.fridgeId}
-          onChange={e => this.setState({ fridgeId: e.target.value })}
-         />
       </DialogContent>
       <DialogActions>
         <Button color="primary" onClick={() => { this.handleForm() }}>

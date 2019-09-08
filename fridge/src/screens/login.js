@@ -9,20 +9,35 @@ import PropTypes from 'prop-types'
 const styles = {
   textField: {
     margin: 10,
+    backgroundColor: 'transparent',
+    width: '30vh',
+    marginTop: 10,
+    borderRadius: 30,
   },
   button: {
     border: 0,
-    borderRadius: 3,
     color: 'white',
     height: 48,
     margin: 10,
+    color: '#fff',
+    backgroundColor: '#283048',
+    borderRadius: 30,
+    height: 48,
+    width: '30vh',
+    marginTop: 40,
   },
   loading: {
-    margin: 10,
+    marginTop: 40,
+    color: '#283048',
   },
+  h1: {
+    fontSize: 80,
+    color: '#283048',
+    marginBottom: 90,
+  }
 }
 
-const { button, textField, loading } = styles
+const { button, textField, loading, h1 } = styles
 
 class Login extends Component {
 
@@ -33,7 +48,8 @@ class Login extends Component {
       isLoading: false,
       items: [],
       email: null,
-      password: null
+      password: null,
+      animationClass: 'test'
     }
   }
 
@@ -59,13 +75,14 @@ class Login extends Component {
     const { error, isLoaded, items } = this.state;
 
     return(
-      <div className="container">
+      <div className={this.state.animationClass}>
         <Grid container
               direction="column"
               justify="center"
               alignItems="center"
               style={{ minHeight: '100vh' }}
               >
+          <h1 style={h1}>My Fridge</h1>
           <Grid item xs={6}>
             <TextField
               id="outlined-email-input"
