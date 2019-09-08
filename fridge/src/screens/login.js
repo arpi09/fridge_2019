@@ -4,8 +4,6 @@ import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import PropTypes from 'prop-types'
-import styled, { keyframes } from 'styled-components'
-import { pulse } from 'react-animations'
 
 
 const styles = {
@@ -76,12 +74,6 @@ class Login extends Component {
   render() {
     const { error, isLoaded, items } = this.state
 
-    const bounceAnimation = keyframes`${pulse}`
-
-    const BouncyDiv = styled.div`
-      animation: 6s ${bounceAnimation} infinite
-    `
-
     return(
       <div className={this.state.animationClass} style={{width: 'fill'}}>
         <Grid container
@@ -90,7 +82,7 @@ class Login extends Component {
               alignItems="center"
               style={{ minHeight: '100vh' }}
               >
-          <BouncyDiv><h1 style={h1}>My Fridge</h1></BouncyDiv>
+          <h1 style={h1}>My Fridge</h1>
           <Grid>
             <TextField
               id="outlined-email-input"
