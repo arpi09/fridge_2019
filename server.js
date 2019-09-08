@@ -128,15 +128,15 @@ app.get("/api/login/:username", (req, res, next) => {
 
 //build mode
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/fridge/public/index.html'));
+  res.sendFile(path.join(__dirname+'/fridge/build/index.html'));
 })
 
 app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname+'/fridge/public/index.html'));
+  res.sendFile(path.join(__dirname+'/fridge/build/index.html'));
 })
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname+'/fridge/public/index.html'));
+  res.sendFile(path.join(__dirname+'/fridge/build/index.html'));
 })
 
 //start server
