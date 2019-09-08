@@ -16,13 +16,11 @@ const styles = {
   },
   button: {
     border: 0,
-    color: 'white',
     height: 48,
     margin: 10,
     color: '#fff',
     backgroundColor: '#283048',
     borderRadius: 30,
-    height: 48,
     width: '30vh',
     marginTop: 40,
   },
@@ -44,7 +42,6 @@ class Login extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      error: null,
       isLoading: false,
       items: [],
       email: null,
@@ -72,8 +69,6 @@ class Login extends Component {
   }
 
   render() {
-    const { error, isLoaded, items } = this.state
-
     return(
       <div className={this.state.animationClass} style={{width: 'fill'}}>
         <Grid container

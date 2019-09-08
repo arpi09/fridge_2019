@@ -22,7 +22,7 @@ export const login = (password) => (dispatch) => {
         console.log(result)
         var bytes = CryptoJS.AES.decrypt(result.data[0].password, 'secret key 123')
         var plaintext = bytes.toString(CryptoJS.enc.Utf8)
-        if (plaintext == password) {
+        if (plaintext === password) {
           dispatch(fetchLoginSuccess(result.data))
         } else {
           dispatch(fetchLoginError())

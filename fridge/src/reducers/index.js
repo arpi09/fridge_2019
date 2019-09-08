@@ -3,7 +3,6 @@ import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import loginReducer from './login'
 import groceriesReducer from './groceries'
-import expireReducer from 'redux-persist-expire'
 
 
 const rootPersistConfig = {

@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
-import LinearProgress from '@material-ui/core/LinearProgress'
-import { makeStyles } from '@material-ui/core/styles'
-import { forwardRef } from 'react'
 import MUIDataTable from "mui-datatables"
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
@@ -24,7 +21,6 @@ const styles = {
   },
   button: {
     border: 0,
-    borderRadius: 3,
     color: '#fff',
     backgroundColor: '#283048',
     borderRadius: 30,
@@ -54,21 +50,20 @@ const styles = {
   }
 }
 
-const { button, textField, table, numbers, numbersBig, headerText } = styles
+const { button, numbers, numbersBig, headerText } = styles
 
 class Home extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      test: [{id: 1, groceryName: 'Test', weight: 2, category: 'test', expireDate: '2232323', }],
-      out: 0,
-      close: 0,
       groceryName: "",
       groceryWeight: 0,
       groceryCategory: "",
       groceryExpireDate: "",
       fridgeId: "",
+      expired: 0,
+      close: 0,
       columns: [
         {
           name: "groceryName",
@@ -95,8 +90,8 @@ class Home extends Component {
           }
          },
          {
-          name: "status",
-          label: "Status",
+          name: "days_left",
+          label: "Days left",
           options: {
             sortDirection: 'asc',
             filter: false,
@@ -145,6 +140,18 @@ class Home extends Component {
     if (!this.props.logedIn) {
       this.props.history.push('/')
     }
+    for(let i = 0; i < this.props.groceries.length; i++) {
+      const today = Date.now()
+      const currentDate = new Date(this.props.groceries[i]['expireDate'])
+      const diffTime = currentDate - today
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+      if (diffDays <= 0) {
+        this.setState({expired : this.state.expired + 1})
+      }
+      if (diffDays < 3 && diffDays > 0) {
+        this.setState({close : this.state.close + 1})
+      }
+    }
   }
 
   async logout() {
@@ -154,11 +161,21 @@ class Home extends Component {
   }
 
   async addItem() {
-    const { groceryName, groceryWeight, groceryCategory, fridgeId, groceryExpireDate } = this.state
+    const { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
     console.log("ADDIN ITEM")
     await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, 1, groceryExpireDate)
     this.fetchGroceries()
     this.handleForm()
+    const today = Date.now()
+    const currentDate = new Date(groceryExpireDate)
+    const diffTime = currentDate - today
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    if (diffDays < 0) {
+      this.setState({expired : this.state.expired + 1})
+    }
+    if (diffDays < 3 && diffDays > 0) {
+      this.setState({close : this.state.close + 1})
+    }
   }
 
   async deleteItem() {
@@ -215,16 +232,14 @@ class Home extends Component {
       const diffTime = currentDate - today
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
       if (diffDays < 0) {
-        this.props.groceries[i]['status'] = 0
+        this.props.groceries[i]['days_left'] = 0
       } else {
-        this.props.groceries[i]['status'] = diffDays
+        this.props.groceries[i]['days_left'] = diffDays
       }
     }
   }
 
   render() {
-    const { } = this.state
-
     const keyFadeIn = keyframes`${fadeIn}`
 
     const FadeInDiv = styled.div`
@@ -245,26 +260,22 @@ class Home extends Component {
               style={{minHeight: '100vh', position: 'fixed'}}
               >
           <Grid
-                direction="row"
-                alignItems="center"
                 style={{minWidth: '20%', textAlign: 'center'}}
                 >
             <CountUp style={numbers} end={this.state.close} duration={2}/>
-            <p style={headerText}>Close</p>
+            <p style={headerText}>Close to Expire</p>
           </Grid>
           <Grid
-                direction="column"
                 style={{minWidth: '20%', textAlign: 'center', height: 198}}
                 >
             <CountUp style={numbersBig} end={this.props.groceries.length} duration={2}/>
             <p style={headerText}>Total groceries</p>
           </Grid>
           <Grid
-                direction="column"
                 style={{minWidth: '20%', textAlign: 'center'}}
                 >
-            <CountUp style={numbers} end={this.state.out} duration={2}/>
-            <p style={headerText}>Out</p>
+            <CountUp style={numbers} end={this.state.expired} duration={2}/>
+            <p style={headerText}>Expired</p>
           </Grid>
         </Grid></FadeInDiv>
         <Grid container
@@ -289,7 +300,6 @@ class Home extends Component {
          </DialogContentText>
          <TextField
           autoFocus
-          margin="dense"
           id="name"
           label="Name"
           type="text"
@@ -300,7 +310,6 @@ class Home extends Component {
           onChange={e => this.setState({ groceryName: e.target.value })}
          />
         <TextField
-          margin="dense"
           id="weight"
           label="Weight"
           type="number"
@@ -312,7 +321,6 @@ class Home extends Component {
         />
         <TextField
           select
-          margin="dense"
           id="category"
           label="Category"
           type="text"
@@ -337,7 +345,6 @@ class Home extends Component {
         ))}
         </TextField>
         <TextField
-          margin="dense"
           id="expireDate"
           label="Expire Date"
           type="date"
