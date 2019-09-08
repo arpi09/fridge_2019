@@ -13,6 +13,8 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import CountUp from 'react-countup'
+import styled, { keyframes } from 'styled-components'
+import { fadeIn } from 'react-animations'
 
 
 
@@ -23,12 +25,12 @@ const styles = {
   button: {
     border: 0,
     borderRadius: 3,
-    color: '#283048',
-    backgroundColor: '#FAFFFD',
+    color: '#fff',
+    backgroundColor: '#283048',
     borderRadius: 30,
     height: 48,
-    marginTop: 40,
-    marginRight: 70,
+    marginTop: 35,
+    marginRight: 35,
     width: 120,
   },
   table: {
@@ -223,16 +225,20 @@ class Home extends Component {
   render() {
     const { } = this.state
 
-    this.addProgressBar()
+    const keyFadeIn = keyframes`${fadeIn}`
 
-    console.log(this.props.groceries)
+    const FadeInDiv = styled.div`
+      animation: 1s ${keyFadeIn}
+    `
+
+    this.addProgressBar()
 
     return(
       <div className="container">
         <Grid style={{height: '10vh', width: '100%' , position: 'fixed', top: 0, left: 0, textAlign: 'right', zIndex: 100}}><Button variant="contained" color="primary" style={button} onClick={() => { this.logout() }}>
           Logout
         </Button></Grid>
-        <Grid container
+        <FadeInDiv><Grid container
               direction="row"
               justify="center"
               alignItems="center"
@@ -260,7 +266,7 @@ class Home extends Component {
             <CountUp style={numbers} end={this.state.out} duration={2}/>
             <p style={headerText}>Out</p>
           </Grid>
-        </Grid>
+        </Grid></FadeInDiv>
         <Grid container
               direction="column"
               justify="center"

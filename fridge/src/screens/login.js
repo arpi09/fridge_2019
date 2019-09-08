@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress'
 import PropTypes from 'prop-types'
+import styled, { keyframes } from 'styled-components'
+import { pulse } from 'react-animations'
 
 
 const styles = {
@@ -72,18 +74,24 @@ class Login extends Component {
   }
 
   render() {
-    const { error, isLoaded, items } = this.state;
+    const { error, isLoaded, items } = this.state
+
+    const bounceAnimation = keyframes`${pulse}`
+
+    const BouncyDiv = styled.div`
+      animation: 6s ${bounceAnimation} infinite
+    `
 
     return(
-      <div className={this.state.animationClass}>
+      <div className={this.state.animationClass} style={{width: 'fill'}}>
         <Grid container
               direction="column"
               justify="center"
               alignItems="center"
               style={{ minHeight: '100vh' }}
               >
-          <h1 style={h1}>My Fridge</h1>
-          <Grid item xs={6}>
+          <BouncyDiv><h1 style={h1}>My Fridge</h1></BouncyDiv>
+          <Grid>
             <TextField
               id="outlined-email-input"
               label="Email"
@@ -96,7 +104,7 @@ class Login extends Component {
               onChange={e => this.setState({ email: e.target.value })}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid>
             <TextField
               id="outlined-password-input"
               label="Password"
