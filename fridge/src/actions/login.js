@@ -18,7 +18,6 @@ export const login = (password) => (dispatch) => {
   return fetch('/api/login/admin@admin.com')
     .then(res => res.json())
     .then(result => {
-      console.log(result)
       if (result.data){
         console.log(result)
         var bytes = CryptoJS.AES.decrypt(result.data[0].password, 'secret key 123')
