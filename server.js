@@ -43,6 +43,11 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 //
 //             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
 //     )`)
+//     db.run(`CREATE TABLE IF NOT EXISTS fridgeHistory (
+//             id          INTEGER PRIMARY KEY AUTOINCREMENT,
+//             amount      INT,
+//             date        DATE,
+//     )`)
 //     db.run(`INSERT INTO fridges (size) VALUES (20)`)
 //     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
 //     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Siri", "siri@admin.com", "hejhej", 1)`)

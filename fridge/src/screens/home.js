@@ -12,6 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import CountUp from 'react-countup'
 import styled, { keyframes } from 'styled-components'
 import { fadeIn } from 'react-animations'
+import { Chart } from 'react-charts'
 
 
 
@@ -48,6 +49,38 @@ const styles = {
     fontSize: 14,
     textAlign: 'center',
   }
+}
+
+function MyChart({groceries}) {
+  const data = React.useMemo(
+    () => [
+      {
+        label: 'Series 1',
+        data: [{ x: new Date(groceries[0]['expireDate']), y: 10 }, { x: new Date(groceries[1]['expireDate']), y: 15 }, { x: new Date(groceries[2]['expireDate']), y: 10 }]
+      },
+    ],
+    []
+  )
+
+  const axes = React.useMemo(
+    () => [
+      { primary: true, type: 'time', position: 'bottom' },
+      { type: 'linear', position: 'left' }
+    ],
+    []
+  )
+
+  return (
+    <div
+      style={{
+        width: '80%',
+        height: '300px',
+        margin: '10%'
+      }}
+    >
+      <Chart data={data} axes={axes} />
+    </div>
+  )
 }
 
 const { button, numbers, numbersBig, headerText } = styles
@@ -159,17 +192,6 @@ class Home extends Component {
   async logout() {
     await this.props.logout()
     this.props.history.push('/')
-    console.log(this.props.logedIn)
-  }
-
-  getDiffDays() {
-    var { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
-    var today = Date.now()
-    var currentDate = new Date(groceryExpireDate)
-    var diffTime = currentDate - today
-    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    return diffDays
   }
 
   async addItem() {
@@ -218,7 +240,6 @@ class Home extends Component {
       data: this.props.groceries,
       totalGroceries: this.props.groceries.length - 1
     })
-    console.log(diffDays)
     if (diffDays <= 0) {
       this.setState({expired : this.state.expired - 1})
     }
@@ -231,7 +252,6 @@ class Home extends Component {
     this.setState({
       open: !this.state.open
     })
-    console.log(this.state.groceryName)
   }
 
   getMuiTheme = () => createMuiTheme({
@@ -282,39 +302,48 @@ class Home extends Component {
     const FadeInDiv = styled.div`
       animation: 1s ${keyFadeIn}
     `
-
     this.addProgressBar()
 
     return(
       <div className="container">
-        <Grid style={{height: '10vh', width: '100%' , position: 'fixed', top: 0, left: 0, textAlign: 'right', zIndex: 100}}><Button variant="contained" color="primary" style={button} onClick={() => { this.logout() }}>
-          Logout
-        </Button></Grid>
-        <FadeInDiv><Grid container
-              direction="row"
-              justify="center"
-              alignItems="center"
-              style={{minHeight: '100vh', position: 'fixed'}}
+        <Grid style={{height: '10vh', width: '100%' , position: 'fixed', top: 0, left: 0, textAlign: 'right', zIndex: 100}}>
+          <Button variant="contained" color="primary" style={button} onClick={() => { this.logout() }}>
+            Logout
+          </Button>
+        </Grid>
+        <FadeInDiv>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            style={{minHeight: '100vh', position: 'fixed'}}
+            >
+            <Grid
+              style={{minWidth: '100%', justifyContent: 'center', alignItems: 'center'}}
               >
-          <Grid
-                style={{minWidth: '20%', textAlign: 'center'}}
-                >
-            <CountUp style={numbers} end={this.state.close} duration={2}/>
-            <p style={headerText}>Close to Expire</p>
+              <MyChart groceries={this.props.groceries}/>
+            </Grid>
+            <Grid
+              style={{minWidth: '20%', textAlign: 'center'}}
+              >
+              <CountUp style={numbers} end={this.state.close} duration={2}/>
+              <p style={headerText}>Close to Expire</p>
+            </Grid>
+            <Grid
+              style={{minWidth: '20%', textAlign: 'center', height: 198}}
+              >
+              <CountUp style={numbersBig} end={this.state.totalGroceries} duration={2}/>
+              <p style={headerText}>Total groceries</p>
+            </Grid>
+            <Grid
+              style={{minWidth: '20%', textAlign: 'center'}}
+              >
+              <CountUp style={numbers} end={this.state.expired} duration={2}/>
+              <p style={headerText}>Expired</p>
+            </Grid>
           </Grid>
-          <Grid
-                style={{minWidth: '20%', textAlign: 'center', height: 198}}
-                >
-            <CountUp style={numbersBig} end={this.state.totalGroceries} duration={2}/>
-            <p style={headerText}>Total groceries</p>
-          </Grid>
-          <Grid
-                style={{minWidth: '20%', textAlign: 'center'}}
-                >
-            <CountUp style={numbers} end={this.state.expired} duration={2}/>
-            <p style={headerText}>Expired</p>
-          </Grid>
-        </Grid></FadeInDiv>
+        </FadeInDiv>
         <Grid container
               direction="column"
               justify="center"
@@ -330,80 +359,80 @@ class Home extends Component {
           />
           </MuiThemeProvider>
           <Dialog open={this.state.open} aria-labelledby="form-dialog-title">
-       <DialogTitle id="form-dialog-title">Add product</DialogTitle>
-       <DialogContent>
-         <DialogContentText>
-           Enter the product information down below.
-         </DialogContentText>
-         <TextField
-          autoFocus
-          id="name"
-          label="Name"
-          type="text"
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          value={this.state.groceryName}
-          onChange={e => this.setState({ groceryName: e.target.value })}
-         />
-        <TextField
-          id="weight"
-          label="Weight"
-          type="number"
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          value={this.state.groceryWeight}
-          onChange={e => this.setState({ groceryWeight: e.target.value })}
-        />
-        <TextField
-          select
-          id="category"
-          label="Category"
-          type="text"
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          value={this.state.groceryCategory}
-          onChange={e => this.setState({ groceryCategory: e.target.value })}
-          SelectProps={{
-            MenuProps: {
-              style: {
-                width: 150,
-                fontSize: '1.1em'
-              },
-            },
-          }}
-        >
-        {this.state.categories.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.value}
-          </option>
-        ))}
-        </TextField>
-        <TextField
-          id="expireDate"
-          label="Expire Date"
-          type="date"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          margin="normal"
-          variant="outlined"
-          value={this.state.groceryExpireDate}
-          onChange={e => this.setState({ groceryExpireDate: e.target.value })}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button color="primary" onClick={() => { this.handleForm() }}>
-          Cancel
-        </Button>
-        <Button color="primary" onClick={() => { this.addItem() }}>
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
-        </Grid>
-      </div>
+            <DialogTitle id="form-dialog-title">Add product</DialogTitle>
+            <DialogContent>
+            <DialogContentText>
+              Enter the product information down below.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              id="name"
+              label="Name"
+              type="text"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={this.state.groceryName}
+              onChange={e => this.setState({ groceryName: e.target.value })}
+              />
+            <TextField
+              id="weight"
+              label="Weight"
+              type="number"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={this.state.groceryWeight}
+              onChange={e => this.setState({ groceryWeight: e.target.value })}
+            />
+            <TextField
+              select
+              id="category"
+              label="Category"
+              type="text"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={this.state.groceryCategory}
+              onChange={e => this.setState({ groceryCategory: e.target.value })}
+              SelectProps={{
+                MenuProps: {
+                  style: {
+                    width: 150,
+                    fontSize: '1.1em'
+                  },
+                },
+              }}
+            >
+            {this.state.categories.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.value}
+              </option>
+            ))}
+            </TextField>
+            <TextField
+              id="expireDate"
+              label="Expire Date"
+              type="date"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              margin="normal"
+              variant="outlined"
+              value={this.state.groceryExpireDate}
+              onChange={e => this.setState({ groceryExpireDate: e.target.value })}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={() => { this.handleForm() }}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={() => { this.addItem() }}>
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Grid>
+    </div>
     )
   }
 }
