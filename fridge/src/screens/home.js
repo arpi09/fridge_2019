@@ -64,6 +64,7 @@ class Home extends Component {
       fridgeId: "",
       expired: 0,
       close: 0,
+      totalGroceries: 0,
       columns: [
         {
           name: "groceryName",
@@ -102,7 +103,7 @@ class Home extends Component {
       tableOptions: {
         onRowsDelete: (rowsDeleted) => {
           for (let i = 0; i < rowsDeleted.data.length; i++) {
-            this.props.removeGroceries(this.props.groceries[rowsDeleted.data[i].dataIndex].id)
+            this.deleteItem(this.props.groceries[rowsDeleted.data[i].dataIndex].id, this.props.groceries[rowsDeleted.data[i].dataIndex].expireDate)
           }
         },
         filterType: 'checkbox',
@@ -111,7 +112,7 @@ class Home extends Component {
         download: false,
         customToolbar: () => {
           return (
-            <Button style={{color: "#3C91E6"}} onClick={() => { this.handleForm() }}>
+            <Button style={{color: "#3C91E6"}} onClick={ () => { this.handleForm() }}>
               ADD
             </Button>
           );
@@ -135,7 +136,8 @@ class Home extends Component {
   async componentDidMount() {
     await this.props.getGroceries(1)
     this.setState({
-      data: this.props.groceries
+      data: this.props.groceries,
+      totalGroceries: this.props.groceries.length
     })
     if (!this.props.logedIn) {
       this.props.history.push('/')
@@ -160,16 +162,41 @@ class Home extends Component {
     console.log(this.props.logedIn)
   }
 
+  getDiffDays() {
+    var { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
+    var today = Date.now()
+    var currentDate = new Date(groceryExpireDate)
+    var diffTime = currentDate - today
+    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    return diffDays
+  }
+
   async addItem() {
     const { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
-    console.log("ADDIN ITEM")
     await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, 1, groceryExpireDate)
-    this.fetchGroceries()
+    this.fetchGroceriesAdd()
     this.handleForm()
-    const today = Date.now()
-    const currentDate = new Date(groceryExpireDate)
-    const diffTime = currentDate - today
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  }
+
+  async deleteItem(id, expireDate) {
+    await this.props.removeGroceries(id)
+    this.fetchGroceriesDelete(expireDate)
+  }
+
+  async fetchGroceriesAdd() {
+    await this.props.getGroceries(1)
+
+    var { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
+    var today = Date.now()
+    var currentDate = new Date(groceryExpireDate)
+    var diffTime = currentDate - today
+    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    this.setState({
+      data: this.props.groceries,
+      totalGroceries: this.props.groceries.length + 1
+    })
     if (diffDays < 0) {
       this.setState({expired : this.state.expired + 1})
     }
@@ -178,16 +205,26 @@ class Home extends Component {
     }
   }
 
-  async deleteItem() {
-    await this.props.removeGroceries(3)
-    this.fetchGroceries()
-  }
-
-  async fetchGroceries() {
+  async fetchGroceriesDelete(expireDate) {
     await this.props.getGroceries(1)
+
+    var { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
+    var today = Date.now()
+    var currentDate = new Date(expireDate)
+    var diffTime = currentDate - today
+    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
     this.setState({
-      data: this.props.groceries
+      data: this.props.groceries,
+      totalGroceries: this.props.groceries.length - 1
     })
+    console.log(diffDays)
+    if (diffDays <= 0) {
+      this.setState({expired : this.state.expired - 1})
+    }
+    if (diffDays < 3 && diffDays > 0) {
+      this.setState({close : this.state.close - 1})
+    }
   }
 
   handleForm() {
@@ -268,7 +305,7 @@ class Home extends Component {
           <Grid
                 style={{minWidth: '20%', textAlign: 'center', height: 198}}
                 >
-            <CountUp style={numbersBig} end={this.props.groceries.length} duration={2}/>
+            <CountUp style={numbersBig} end={this.state.totalGroceries} duration={2}/>
             <p style={headerText}>Total groceries</p>
           </Grid>
           <Grid
