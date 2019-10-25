@@ -16,6 +16,7 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 //     db.run("DROP TABLE IF EXISTS users")
 //     db.run("DROP TABLE IF EXISTS fridges")
 //     db.run("DROP TABLE IF EXISTS groceries")
+//     db.run("DROP TABLE IF EXISTS fridgesHistory")
 //     db.run(`CREATE TABLE IF NOT EXISTS users (
 //             name      TEXT,
 //             email     TEXT NOT NULL,
@@ -43,10 +44,14 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 //
 //             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
 //     )`)
-//     db.run(`CREATE TABLE IF NOT EXISTS fridgeHistory (
+//     db.run(`CREATE TABLE IF NOT EXISTS fridgesHistory (
 //             id          INTEGER PRIMARY KEY AUTOINCREMENT,
-//             amount      INT,
-//             date        DATE,
+//             y           INT,
+//             x           DATE,
+//
+//             fridgeID    INT,
+//
+//             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
 //     )`)
 //     db.run(`INSERT INTO fridges (size) VALUES (20)`)
 //     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
@@ -58,6 +63,14 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 //     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k32", 1, "Dairy", 1, "2020-01-01")`)
 //     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk2", 1, "Meat", 1, "2020-01-01")`)
 //     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
+//
+//     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (1, datetime('now'), 1)`)
+//     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (2, datetime('now'), 1)`)
+//     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (3, datetime('now'), 1)`)
+//     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (4, datetime('now'), 1)`)
+//     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (5, datetime('now'), 1)`)
+//     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (6, datetime('now'), 1)`)
+//     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (7, datetime('now'), 1)`)
 // });
 
 app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, res) => {
@@ -74,6 +87,21 @@ app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, r
     res.json({
         "message":"success",
         "data": this.lastID
+    })
+  });
+});
+
+app.get('/api/history/:id', (req, res) => {
+  var params = [req.params.id]
+  db.all("SELECT x, y FROM fridgesHistory WHERE fridgeID=?", params, function(err, row){
+    console.log(row)
+    if (err) {
+      res.status(400).json({"error":err.message});
+      return;
+    }
+    res.json({
+        "message":"success",
+        "data":row
     })
   });
 });
@@ -130,6 +158,7 @@ app.get("/api/login/:username", (req, res, next) => {
         return
       });
 });
+
 
 //build mode
 app.get('/*', (req, res) => {

@@ -66,3 +66,28 @@ export const removeGroceries = (id) => (dispatch) => {
         dispatch(fetchRemoveGroceriesError())
       })
 }
+
+export const fetchFridgeHistorySuccess = (data) => ({
+  type: 'FETCH_FRIDGE_HISTORY_SUCCESS',
+  data
+})
+
+export const fetchFridgeHistoryError = () => ({
+  type: 'FETCH_FRIDGE_HISTORY_ERROR',
+})
+
+export const getFridgeHistory = (id) => (dispatch) => {
+  fetch('/api/history/' + id, {
+    method: 'get'
+  })
+    .then(res => res.json())
+    .then(result => {
+      console.log("GETTING!")
+      dispatch(fetchFridgeHistorySuccess(result.data))
+    },
+      (error) => {
+        console.log(error)
+        console.log("ERROR!")
+        dispatch(fetchFridgeHistoryError())
+      })
+}

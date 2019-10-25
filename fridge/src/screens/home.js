@@ -51,12 +51,17 @@ const styles = {
   }
 }
 
-function MyChart({groceries}) {
+function MyChart({ history }) {
+  console.log(history)
+  for (var i = 0; i < history.length; i++) {
+    console.log(history[i]['x'])
+    history[i]['x'] = new Date(history[i]['x']).getTime()
+  }
   const data = React.useMemo(
     () => [
       {
         label: 'Series 1',
-        data: [{ x: new Date(groceries[0]['expireDate']), y: 10 }, { x: new Date(groceries[1]['expireDate']), y: 15 }, { x: new Date(groceries[2]['expireDate']), y: 10 }]
+        data: history
       },
     ],
     []
@@ -167,6 +172,7 @@ class Home extends Component {
   }
 
   async componentDidMount() {
+    this.props.getFridgeHistory(1)
     await this.props.getGroceries(1)
     this.setState({
       data: this.props.groceries,
@@ -322,7 +328,7 @@ class Home extends Component {
             <Grid
               style={{minWidth: '100%', justifyContent: 'center', alignItems: 'center'}}
               >
-              <MyChart groceries={this.props.groceries}/>
+              <MyChart history={this.props.history}/>
             </Grid>
             <Grid
               style={{minWidth: '20%', textAlign: 'center'}}
