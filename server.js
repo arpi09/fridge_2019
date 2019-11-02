@@ -131,12 +131,12 @@ app.get('/api/groceries/:id', (req, res) => {
 });
 
 app.get("/api/login/:username", (req, res, next) => {
-    var params = [req.params.username]
+    var params = req.params.username
     var sql = `select *
                FROM   users
                WHERE  name=?`
     db.all(sql, params, (err, row) => {
-      console.log(row)
+        console.log(row)
         if (err) {
           res.status(400).json({"error":err.message})
           return
