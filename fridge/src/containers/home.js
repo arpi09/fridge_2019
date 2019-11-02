@@ -11,7 +11,7 @@ const mapStateToProps = state => ({
   groceries: state.groceriesReducer.groceries,
   expired: state.groceriesReducer.expired,
   close: state.groceriesReducer.close,
-  history: state.groceriesReducer.history
+  groceryHistory: state.groceriesReducer.groceryHistory
 })
 
 function mapDispatchToProps(dispatch) {

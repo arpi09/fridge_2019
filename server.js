@@ -136,6 +136,7 @@ app.get("/api/login/:username", (req, res, next) => {
                FROM   users
                WHERE  name=?`
     db.all(sql, params, (err, row) => {
+      console.log(row)
         if (err) {
           res.status(400).json({"error":err.message})
           return

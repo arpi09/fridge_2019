@@ -1,6 +1,6 @@
 const initialState = {
   groceries: [],
-  history: []
+  groceryHistory: []
 }
 
 const groceriesReducer = (state = initialState, action) => {
@@ -51,7 +51,7 @@ const groceriesReducer = (state = initialState, action) => {
     case 'FETCH_FRIDGE_HISTORY_SUCCESS':
       return {
         ...state,
-        history: action.data
+        groceryHistory: action.data
       }
     case 'FETCH_FRIDGE_HISTORY_ERROR':
       return {

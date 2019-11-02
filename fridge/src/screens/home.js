@@ -51,40 +51,40 @@ const styles = {
   }
 }
 
-// function MyChart({ history }) {
-//   for (var i = 0; i < history.length; i++) {
-//     history[i]['x'] = new Date(history[i]['x']).getTime()
-//   }
-//   const data = React.useMemo(
-//     () => [
-//       {
-//         label: 'Series 1',
-//         data: history
-//       },
-//     ],
-//     []
-//   )
-//
-//   const axes = React.useMemo(
-//     () => [
-//       { primary: true, type: 'time', position: 'bottom' },
-//       { type: 'linear', position: 'left' }
-//     ],
-//     []
-//   )
-//
-//   return (
-//     <div
-//       style={{
-//         width: '80%',
-//         height: '300px',
-//         margin: '10%'
-//       }}
-//     >
-//       <Chart data={data} axes={axes} />
-//     </div>
-//   )
-// }
+function MyChart({ history }) {
+  for (var i = 0; i < history.length; i++) {
+    history[i]['x'] = new Date(history[i]['x']).getTime()
+  }
+  const data = React.useMemo(
+    () => [
+      {
+        label: 'Series 1',
+        data: history
+      },
+    ],
+    []
+  )
+
+  const axes = React.useMemo(
+    () => [
+      { primary: true, type: 'time', position: 'bottom' },
+      { type: 'linear', position: 'left' }
+    ],
+    []
+  )
+
+  return (
+    <div
+      style={{
+        width: '80%',
+        height: '300px',
+        margin: '10%'
+      }}
+    >
+      <Chart data={data} axes={axes} />
+    </div>
+  )
+}
 
 const { button, numbers, numbersBig, headerText } = styles
 
@@ -270,7 +270,11 @@ class Home extends Component {
             alignItems="center"
             style={{minHeight: '100vh', position: 'fixed'}}
             >
-
+            <Grid
+              style={{minWidth: '100%', justifyContent: 'center', alignItems: 'center'}}
+              >
+              <MyChart history={this.props.groceryHistory}/>
+            </Grid>
             <Grid
               style={{minWidth: '20%', textAlign: 'center'}}
               >
