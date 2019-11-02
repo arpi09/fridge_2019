@@ -12,7 +12,6 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 // })
 
 // db.serialize(function() {
-//     console.log("oiaheoiawehwih")
 //     db.run("DROP TABLE IF EXISTS users")
 //     db.run("DROP TABLE IF EXISTS fridges")
 //     db.run("DROP TABLE IF EXISTS groceries")
@@ -75,12 +74,9 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 
 app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, res) => {
   var params = [req.params.name, req.params.weight, req.params.category, req.params.fridgeID, req.params.expiredate]
-  console.log(params)
   var sql = `INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES (?,?,?,?,?)`
   db.run(sql, params, function (err) {
-    console.log(this)
     if (err) {
-      console.log(err)
       res.status(400).json({"error":err.message});
       return;
     }
@@ -94,7 +90,6 @@ app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, r
 app.get('/api/history/:id', (req, res) => {
   var params = [req.params.id]
   db.all("SELECT x, y FROM fridgesHistory WHERE fridgeID=?", params, function(err, row){
-    console.log(row)
     if (err) {
       res.status(400).json({"error":err.message});
       return;
@@ -108,12 +103,9 @@ app.get('/api/history/:id', (req, res) => {
 
 app.delete('/api/groceries/:fridgeID', function(req, res) {
   var params = [req.params.fridgeID]
-  console.log(params)
   var sql = `DELETE FROM groceries WHERE id=?`
   db.run(sql, params, function (err, row) {
-    console.log(this)
     if (err) {
-      console.log(err)
       res.status(400).json({"error":err.message});
       return;
     }
@@ -127,7 +119,6 @@ app.delete('/api/groceries/:fridgeID', function(req, res) {
 app.get('/api/groceries/:id', (req, res) => {
   var params = [req.params.id]
   db.all("SELECT * FROM groceries WHERE fridgeID=?", params, function(err, row){
-    console.log(row)
     if (err) {
       res.status(400).json({"error":err.message});
       return;
@@ -145,10 +136,8 @@ app.get("/api/login/:username", (req, res, next) => {
                FROM   users
                WHERE  name=?`
     db.all(sql, params, (err, row) => {
-        console.log(row)
         if (err) {
           res.status(400).json({"error":err.message})
-          console.log(err)
           return
         }
         res.json({

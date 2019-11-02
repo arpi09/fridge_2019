@@ -14,7 +14,6 @@ export const getGroceries = (id) => (dispatch) => {
       dispatch(fetchGroceriesSuccess(result.data))
     },
       (error) => {
-        console.log("ERROR!")
         dispatch(fetchGroceriesError())
       })
 }
@@ -34,11 +33,9 @@ export const addGroceries = (name, weight, category, expireDate, fridgeID) => (d
   })
     .then(res => res.json())
     .then(result => {
-      console.log("ADDING!")
       dispatch(fetchAddGroceriesSuccess(result.data))
     },
       (error) => {
-        console.log("ERROR!")
         dispatch(fetchAddGroceriesError())
       })
 }
@@ -58,11 +55,9 @@ export const removeGroceries = (id) => (dispatch) => {
   })
     .then(res => res.json())
     .then(result => {
-      console.log("REMOVING!")
       dispatch(fetchRemoveGroceriesSuccess(result.data))
     },
       (error) => {
-        console.log("ERROR!")
         dispatch(fetchRemoveGroceriesError())
       })
 }
@@ -82,12 +77,9 @@ export const getFridgeHistory = (id) => (dispatch) => {
   })
     .then(res => res.json())
     .then(result => {
-      console.log("GETTING!")
       dispatch(fetchFridgeHistorySuccess(result.data))
     },
       (error) => {
-        console.log(error)
-        console.log("ERROR!")
         dispatch(fetchFridgeHistoryError())
       })
 }

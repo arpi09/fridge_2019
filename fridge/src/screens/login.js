@@ -51,7 +51,6 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.logedIn)
     if (this.props.logedIn) {
       this.props.history.push('/home')
     }
@@ -61,7 +60,6 @@ class Login extends Component {
     this.setState({
       isLoading: true,
     });
-    console.log(this.state.password)
     await this.props.login(this.state.password)
     if (this.props.logedIn) {
       this.props.history.push('/home')

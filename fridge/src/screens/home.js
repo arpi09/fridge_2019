@@ -52,9 +52,7 @@ const styles = {
 }
 
 function MyChart({ history }) {
-  console.log(history)
   for (var i = 0; i < history.length; i++) {
-    console.log(history[i]['x'])
     history[i]['x'] = new Date(history[i]['x']).getTime()
   }
   const data = React.useMemo(
@@ -171,95 +169,6 @@ class Home extends Component {
     }
   }
 
-  async componentDidMount() {
-    this.props.getFridgeHistory(1)
-    await this.props.getGroceries(1)
-    this.setState({
-      data: this.props.groceries,
-      totalGroceries: this.props.groceries.length
-    })
-    if (!this.props.logedIn) {
-      this.props.history.push('/')
-    }
-    for(let i = 0; i < this.props.groceries.length; i++) {
-      const today = Date.now()
-      const currentDate = new Date(this.props.groceries[i]['expireDate'])
-      const diffTime = currentDate - today
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-      if (diffDays <= 0) {
-        this.setState({expired : this.state.expired + 1})
-      }
-      if (diffDays < 3 && diffDays > 0) {
-        this.setState({close : this.state.close + 1})
-      }
-    }
-  }
-
-  async logout() {
-    await this.props.logout()
-    this.props.history.push('/')
-  }
-
-  async addItem() {
-    const { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
-    await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, 1, groceryExpireDate)
-    this.fetchGroceriesAdd()
-    this.handleForm()
-  }
-
-  async deleteItem(id, expireDate) {
-    await this.props.removeGroceries(id)
-    this.fetchGroceriesDelete(expireDate)
-  }
-
-  async fetchGroceriesAdd() {
-    await this.props.getGroceries(1)
-
-    var { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
-    var today = Date.now()
-    var currentDate = new Date(groceryExpireDate)
-    var diffTime = currentDate - today
-    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    this.setState({
-      data: this.props.groceries,
-      totalGroceries: this.props.groceries.length + 1
-    })
-    if (diffDays < 0) {
-      this.setState({expired : this.state.expired + 1})
-    }
-    if (diffDays < 3 && diffDays > 0) {
-      this.setState({close : this.state.close + 1})
-    }
-  }
-
-  async fetchGroceriesDelete(expireDate) {
-    await this.props.getGroceries(1)
-
-    var { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
-    var today = Date.now()
-    var currentDate = new Date(expireDate)
-    var diffTime = currentDate - today
-    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    this.setState({
-      data: this.props.groceries,
-      totalGroceries: this.props.groceries.length - 1
-    })
-    if (diffDays <= 0) {
-      this.setState({expired : this.state.expired - 1})
-    }
-    if (diffDays < 3 && diffDays > 0) {
-      this.setState({close : this.state.close - 1})
-    }
-  }
-
-  handleForm() {
-    this.setState({
-      open: !this.state.open
-    })
-  }
-
   getMuiTheme = () => createMuiTheme({
     overrides: {
       MuiTableRow: {
@@ -287,6 +196,42 @@ class Home extends Component {
       }
     }
   })
+
+  async componentDidMount() {
+    this.props.getFridgeHistory(1)
+    await this.props.getGroceries(1)
+    this.setState({
+      data: this.props.groceries,
+      totalGroceries: this.props.groceries.length
+    })
+    if (!this.props.logedIn) {
+      this.props.history.push('/')
+    }
+  }
+
+  async logout() {
+    await this.props.logout()
+    this.props.history.push('/')
+  }
+
+  async addItem() {
+    const { groceryName, groceryWeight, groceryCategory, groceryExpireDate } = this.state
+
+    await this.props.addGroceries(groceryName, groceryWeight, groceryCategory, 1, groceryExpireDate)
+    this.props.getGroceries(1)
+    this.handleForm()
+  }
+
+  async deleteItem(id, expireDate) {
+    await this.props.removeGroceries(id)
+    this.props.getGroceries(1)
+  }
+
+  handleForm() {
+    this.setState({
+      open: !this.state.open
+    })
+  }
 
   addProgressBar() {
     for(let i = 0; i < this.props.groceries.length; i++) {
@@ -333,19 +278,19 @@ class Home extends Component {
             <Grid
               style={{minWidth: '20%', textAlign: 'center'}}
               >
-              <CountUp style={numbers} end={this.state.close} duration={2}/>
+              <CountUp style={numbers} end={this.props.close} duration={2}/>
               <p style={headerText}>Close to Expire</p>
             </Grid>
             <Grid
               style={{minWidth: '20%', textAlign: 'center', height: 198}}
               >
-              <CountUp style={numbersBig} end={this.state.totalGroceries} duration={2}/>
+              <CountUp style={numbersBig} end={this.props.groceries.length} duration={2}/>
               <p style={headerText}>Total groceries</p>
             </Grid>
             <Grid
               style={{minWidth: '20%', textAlign: 'center'}}
               >
-              <CountUp style={numbers} end={this.state.expired} duration={2}/>
+              <CountUp style={numbers} end={this.props.expired} duration={2}/>
               <p style={headerText}>Expired</p>
             </Grid>
           </Grid>

@@ -15,14 +15,9 @@ const loginPersistConfig = {
   storage,
 }
 
-const groceriesPersistConfig = {
-  key: 'groceries',
-  storage,
-}
-
 const rootReducer = combineReducers({
   loginReducer: persistReducer(loginPersistConfig, loginReducer),
-  groceriesReducer: persistReducer(groceriesPersistConfig, groceriesReducer),
+  groceriesReducer
 })
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer)

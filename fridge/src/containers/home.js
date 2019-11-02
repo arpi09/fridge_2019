@@ -9,6 +9,8 @@ const mapStateToProps = state => ({
   logedIn: state.loginReducer.logedIn,
   data: state.loginReducer.data,
   groceries: state.groceriesReducer.groceries,
+  expired: state.groceriesReducer.expired,
+  close: state.groceriesReducer.close,
   history: state.groceriesReducer.history
 })
 

@@ -13,7 +13,6 @@ const loginReducer = (state = initialState, action) => {
         data: items
       }
     case 'LOGIN_ERROR':
-      console.log(action.error)
       return {
         ...state,
         logedIn: false,
