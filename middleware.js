@@ -9,7 +9,7 @@ let checkToken = (req, res, next) => {
   }
 
   if (token) {
-    jwt.verify(token, config.secret, (err, decoded) => {
+    jwt.verify(token, process.env.JWT, (err, decoded) => {
       if (err) {
         return res.json({
           success: false,

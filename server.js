@@ -174,6 +174,7 @@ app.use(bodyParser.json())
 app.use(express.json());
 
 app.post("/api/login", (req, res, next) => {
+    console.log(process.env.JWT)
     var params = [req.body.username]
     let username = req.body.username
     let password = req.body.password
@@ -185,7 +186,7 @@ app.post("/api/login", (req, res, next) => {
       if (username && password) {
         if (username === row[0].email && password === row[0].password) {
           let token = jwt.sign({username: username},
-            config.secret,
+            process.env.JWT,
             { expiresIn: '5s'
             }
           )
