@@ -1,6 +1,7 @@
 const initialState = {
   groceries: [],
-  groceryHistory: []
+  groceryHistory: [],
+  invalidToken: false,
 }
 
 const groceriesReducer = (state = initialState, action) => {
@@ -26,11 +27,13 @@ const groceriesReducer = (state = initialState, action) => {
         ...state,
         expired: expired,
         close: close,
-        groceries: groceries
+        groceries: groceries,
+        invalidToken: false,
       }
     case 'GET_GROCERIES_ERROR':
       return {
         ...state,
+        invalidToken: true,
       }
     case 'ADD_GROCERIES_SUCCESS':
       return {
@@ -56,6 +59,11 @@ const groceriesReducer = (state = initialState, action) => {
     case 'FETCH_FRIDGE_HISTORY_ERROR':
       return {
         ...state,
+      }
+    case 'UNSET_INVALID_TOKEN':
+      return {
+        ...state,
+        invalidToken: false,
       }
     default:
       return state

@@ -14,7 +14,9 @@ export const logout = () => ({
 export const login = (email, password) => (dispatch) => {
   let data = {
     method: 'post',
-    headers: {'Content-Type':'application/json'},
+    headers: {
+      'Content-Type':'application/json'
+    },
     body: JSON.stringify({username: email, password: password})
   }
   fetch(`/api/login`, data)
@@ -22,6 +24,7 @@ export const login = (email, password) => (dispatch) => {
     .then(result => {
       if (result.success) {
           console.log(result)
+          sessionStorage.setItem("jwt", result.token);
           dispatch(fetchLoginSuccess())
       } else {
         dispatch(fetchLoginError())

@@ -209,6 +209,17 @@ class Home extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // only update chart if the data has changed
+    if (prevProps.invalidToken !== this.props.invalidToken) {
+      if (this.props.logedIn) {
+        this.props.unsetInvalidtokenIdentifier()
+        this.props.logout()
+        this.props.history.push('/')
+      }
+    }
+  }
+
   async logout() {
     await this.props.logout()
     this.props.history.push('/')
@@ -270,7 +281,11 @@ class Home extends Component {
             alignItems="center"
             style={{minHeight: '100vh', position: 'fixed'}}
             >
-
+            <Grid
+              style={{minWidth: '100%', justifyContent: 'center', alignItems: 'center'}}
+              >
+              <MyChart history={this.props.groceryHistory}/>
+            </Grid>
             <Grid
               style={{minWidth: '20%', textAlign: 'center'}}
               >

@@ -7,6 +7,7 @@ var db = new sqlite3.Database('./database.sqlite')
 let jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 let config = require('./config')
+let middleware = require('./middleware')
 
 app.use(express.static(path.join(__dirname, 'fridge/build')))
 
@@ -75,6 +76,9 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 //     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (7, datetime('now'), 1)`)
 // });
 
+
+
+
 app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, res) => {
   var params = [req.params.name, req.params.weight, req.params.category, req.params.fridgeID, req.params.expiredate]
   var sql = `INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES (?,?,?,?,?)`
@@ -84,7 +88,7 @@ app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, r
       return;
     }
     res.json({
-        "message":"success",
+        "message": "success",
         "data": this.lastID
     })
   });
@@ -98,7 +102,7 @@ app.get('/api/history/:id', (req, res) => {
       return;
     }
     res.json({
-        "message":"success",
+        "message": "success",
         "data":row
     })
   });
@@ -119,7 +123,33 @@ app.delete('/api/groceries/:fridgeID', function(req, res) {
   });
 });
 
-app.get('/api/groceries/:id', (req, res) => {
+app.get('/api/groceries/:id', middleware.checkToken, (req, res) => {
+  // let token = req.headers['authorization']; // Express headers are auto converted to lowercase
+  // if (token.startsWith('Bearer ')) {
+  //   // Remove Bearer from string
+  //   token = token.slice(7, token.length);
+  // }
+  // console.log("-----------")
+  // console.log(token)
+  // console.log("-----------")
+  // if (token) {
+  //   jwt.verify(token, config.secret, (err, decoded) => {
+  //     if (err) {
+  //       return res.json({
+  //         success: false,
+  //         message: 'Token is not valid'
+  //       });
+  //     } else {
+  //       req.decoded = decoded;
+  //       return
+  //     }
+  //   });
+  // } else {
+  //   return res.json({
+  //     success: false,
+  //     message: 'Auth token is not supplied'
+  //   });
+  // }
   var params = [req.params.id]
   db.all("SELECT * FROM groceries WHERE fridgeID=?", params, function(err, row){
     if (err) {
@@ -156,7 +186,7 @@ app.post("/api/login", (req, res, next) => {
         if (username === row[0].email && password === row[0].password) {
           let token = jwt.sign({username: username},
             config.secret,
-            { expiresIn: '24h'
+            { expiresIn: '5s'
             }
           )
           res.json({

@@ -3,15 +3,28 @@ export const fetchGroceriesSuccess = (data) => ({
   data
 })
 
-export const fetchGroceriesError = () => ({
+export const fetchGroceriesError = (message) => ({
   type: 'GET_GROCERIES_ERROR',
+  message: message,
 })
 
 export const getGroceries = (id) => (dispatch) => {
-  fetch('/api/groceries/' + id)
+  let token = sessionStorage.getItem("jwt")
+  let data = {
+    method: 'get',
+    headers: {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+  }
+  fetch('/api/groceries/' + id, data)
     .then(res => res.json())
     .then(result => {
-      dispatch(fetchGroceriesSuccess(result.data))
+      if (result.success) {
+        dispatch(fetchGroceriesSuccess(result.data))
+      } else {
+        dispatch(fetchGroceriesError(result.message))
+      }
     },
       (error) => {
         dispatch(fetchGroceriesError())
@@ -45,8 +58,9 @@ export const fetchRemoveGroceriesSuccess = (data) => ({
   data
 })
 
-export const fetchRemoveGroceriesError = () => ({
+export const fetchRemoveGroceriesError = (message) => ({
   type: 'REMOVE_GROCERIES_ERROR',
+  message: message,
 })
 
 export const removeGroceries = (id) => (dispatch) => {
@@ -55,7 +69,11 @@ export const removeGroceries = (id) => (dispatch) => {
   })
     .then(res => res.json())
     .then(result => {
-      dispatch(fetchRemoveGroceriesSuccess(result.data))
+      if (result.success) {
+        dispatch(fetchRemoveGroceriesSuccess(result.data))
+      } else {
+        dispatch(fetchRemoveGroceriesError(result.message))
+      }
     },
       (error) => {
         dispatch(fetchRemoveGroceriesError())
@@ -83,3 +101,7 @@ export const getFridgeHistory = (id) => (dispatch) => {
         dispatch(fetchFridgeHistoryError())
       })
 }
+
+export const unsetInvalidtokenIdentifier = () => ({
+  type: 'UNSET_INVALID_TOKEN',
+})
