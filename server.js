@@ -160,7 +160,7 @@ app.post("/api/login", (req, res, next) => {
         if (username === row[0].email && password === row[0].password) {
           let token = jwt.sign({username: username},
             process.env.JWT,
-            { expiresIn: '5s'
+            { expiresIn: '15m'
             }
           )
           res.json({
