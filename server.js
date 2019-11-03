@@ -1,9 +1,12 @@
-const express = require('express');
-const app = express();
-const path = require('path');
-const port = process.env.PORT || 5000;
-var sqlite3 = require('sqlite3').verbose();
+const express = require('express')
+const app = express()
+const path = require('path')
+const port = process.env.PORT || 5000
+var sqlite3 = require('sqlite3').verbose()
 var db = new sqlite3.Database('./database.sqlite')
+let jwt = require('jsonwebtoken')
+const bodyParser = require('body-parser')
+let config = require('./config')
 
 app.use(express.static(path.join(__dirname, 'fridge/build')))
 
@@ -53,7 +56,7 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 //             FOREIGN KEY (fridgeID) REFERENCES fridges(id)
 //     )`)
 //     db.run(`INSERT INTO fridges (size) VALUES (20)`)
-//     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("admin@admin.com", "arvid@admin.com", "U2FsdGVkX1+Wzg9xOPC6eanaasKWx4iT9bLltm1sCJc=", 1)`)
+//     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Arvid", "admin@admin.com", "135711Ap!", 1)`)
 //     db.run(`INSERT INTO users (name, email, password, fridgeID) VALUES ("Siri", "siri@admin.com", "hejhej", 1)`)
 //     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Milk", 1, "Dairy", 1, "2020-01-01")`)
 //     db.run(`INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES ("Mil3k2", 1, "Dairy", 1, "2020-01-01")`)
@@ -130,24 +133,51 @@ app.get('/api/groceries/:id', (req, res) => {
   });
 });
 
-app.get("/api/login/:username", (req, res, next) => {
-    var params = req.params.username
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+)
+
+app.use(bodyParser.json())
+
+app.use(express.json());
+
+app.post("/api/login", (req, res, next) => {
+    var params = [req.body.username]
+    let username = req.body.username
+    let password = req.body.password
+
     var sql = `select *
                FROM   users
-               WHERE  name=?`
-    db.all(sql, params, (err, row) => {
-        console.log(row)
-        if (err) {
-          res.status(400).json({"error":err.message})
-          return
+               WHERE  email=?`
+    db.all(sql, params, username, password, (err, row) => {
+      if (username && password) {
+        if (username === row[0].email && password === row[0].password) {
+          let token = jwt.sign({username: username},
+            config.secret,
+            { expiresIn: '24h'
+            }
+          )
+          res.json({
+            success: true,
+            message: 'Authentication successful!',
+            token: token
+          })
+        } else {
+          res.json({
+            success: false,
+            message: 'Incorrect username or password'
+          })
         }
+      } else {
         res.json({
-            "message":"success",
-            "data": row
+          success: false,
+          message: 'Authentication failed! Please check the request'
         })
-        return
-      });
-});
+      }
+    })
+})
 
 
 //build mode

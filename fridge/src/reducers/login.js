@@ -1,6 +1,5 @@
 const initialState = {
   logedIn: false,
-  data: null
 }
 
 const loginReducer = (state = initialState, action) => {
@@ -10,7 +9,6 @@ const loginReducer = (state = initialState, action) => {
       return {
         ...state,
         logedIn: true,
-        data: items
       }
     case 'LOGIN_ERROR':
       return {

@@ -1,6 +1,5 @@
-export const fetchLoginSuccess = (data) => ({
+export const fetchLoginSuccess = () => ({
   type: 'LOGIN_SUCCESS',
-  data
 })
 
 export const fetchLoginError = (error) => ({
@@ -12,19 +11,18 @@ export const logout = () => ({
   type: 'LOGOUT',
 })
 
-export const login = (password) => (dispatch) => {
-  var CryptoJS = require("crypto-js")
-  return fetch('/api/login/admin@admin.com')
+export const login = (email, password) => (dispatch) => {
+  let data = {
+    method: 'post',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({username: email, password: password})
+  }
+  fetch(`/api/login`, data)
     .then(res => res.json())
     .then(result => {
-      if (result.data){
-        var bytes = CryptoJS.AES.decrypt(result.data[0].password, 'secret key 123')
-        var plaintext = bytes.toString(CryptoJS.enc.Utf8)
-        if (plaintext === password) {
-          dispatch(fetchLoginSuccess(result.data))
-        } else {
-          dispatch(fetchLoginError())
-        }
+      if (result.success) {
+          console.log(result)
+          dispatch(fetchLoginSuccess())
       } else {
         dispatch(fetchLoginError())
       }

@@ -56,14 +56,20 @@ class Login extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // only update chart if the data has changed
+    if (prevProps.data !== this.props.logedIn) {
+      if (this.props.logedIn) {
+        this.props.history.push('/home')
+      }
+    }
+  }
+
   async onPresslogin() {
     this.setState({
       isLoading: true,
     });
-    await this.props.login(this.state.password)
-    if (this.props.logedIn) {
-      this.props.history.push('/home')
-    }
+    await this.props.login(this.state.email, this.state.password)
   }
 
   render() {
