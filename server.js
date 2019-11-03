@@ -124,32 +124,6 @@ app.delete('/api/groceries/:fridgeID', function(req, res) {
 });
 
 app.get('/api/groceries/:id', middleware.checkToken, (req, res) => {
-  // let token = req.headers['authorization']; // Express headers are auto converted to lowercase
-  // if (token.startsWith('Bearer ')) {
-  //   // Remove Bearer from string
-  //   token = token.slice(7, token.length);
-  // }
-  // console.log("-----------")
-  // console.log(token)
-  // console.log("-----------")
-  // if (token) {
-  //   jwt.verify(token, config.secret, (err, decoded) => {
-  //     if (err) {
-  //       return res.json({
-  //         success: false,
-  //         message: 'Token is not valid'
-  //       });
-  //     } else {
-  //       req.decoded = decoded;
-  //       return
-  //     }
-  //   });
-  // } else {
-  //   return res.json({
-  //     success: false,
-  //     message: 'Auth token is not supplied'
-  //   });
-  // }
   var params = [req.params.id]
   db.all("SELECT * FROM groceries WHERE fridgeID=?", params, function(err, row){
     if (err) {
@@ -174,7 +148,6 @@ app.use(bodyParser.json())
 app.use(express.json());
 
 app.post("/api/login", (req, res, next) => {
-    console.log(process.env.JWT)
     var params = [req.body.username]
     let username = req.body.username
     let password = req.body.password
