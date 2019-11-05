@@ -281,11 +281,7 @@ class Home extends Component {
             alignItems="center"
             style={{minHeight: '100vh', position: 'fixed'}}
             >
-            <Grid
-              style={{minWidth: '100%', justifyContent: 'center', alignItems: 'center'}}
-              >
-              <MyChart history={this.props.groceryHistory}/>
-            </Grid>
+
             <Grid
               style={{minWidth: '20%', textAlign: 'center'}}
               >

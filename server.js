@@ -74,68 +74,68 @@ app.use(express.static(path.join(__dirname, 'fridge/build')))
 //     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (5, datetime('now'), 1)`)
 //     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (6, datetime('now'), 1)`)
 //     db.run(`INSERT INTO fridgesHistory (y, x, fridgeID) VALUES (7, datetime('now'), 1)`)
-// });
+// })
 
 
 
 
-app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', (req, res) => {
+app.post('/api/groceries/:name/:weight/:category/:expiredate/:fridgeID', middleware.checkToken, (req, res) => {
   var params = [req.params.name, req.params.weight, req.params.category, req.params.fridgeID, req.params.expiredate]
   var sql = `INSERT INTO groceries (groceryName, weight, category, fridgeID, expireDate) VALUES (?,?,?,?,?)`
   db.run(sql, params, function (err) {
     if (err) {
-      res.status(400).json({"error":err.message});
-      return;
+      res.status(400).json({"error":err.message})
+      return
     }
     res.json({
-        "message": "success",
-        "data": this.lastID
+        message: 'success',
+        data: this.lastID
     })
-  });
-});
+  })
+})
 
 app.get('/api/history/:id', (req, res) => {
   var params = [req.params.id]
-  db.all("SELECT x, y FROM fridgesHistory WHERE fridgeID=?", params, function(err, row){
+  db.all('SELECT x, y FROM fridgesHistory WHERE fridgeID=?', params, function(err, row){
     if (err) {
-      res.status(400).json({"error":err.message});
-      return;
+      res.status(400).json({"error":err.message})
+      return
     }
     res.json({
-        "message": "success",
-        "data":row
+        message: 'success',
+        data: row
     })
-  });
-});
+  })
+})
 
-app.delete('/api/groceries/:fridgeID', function(req, res) {
+app.delete('/api/groceries/:fridgeID', middleware.checkToken, function(req, res) {
   var params = [req.params.fridgeID]
-  var sql = `DELETE FROM groceries WHERE id=?`
+  var sql = 'DELETE FROM groceries WHERE id=?'
   db.run(sql, params, function (err, row) {
     if (err) {
-      res.status(400).json({"error":err.message});
-      return;
+      res.status(400).json({"error":err.message})
+      return
     }
     res.json({
-        "message":"success",
-        "data": this.lastID
+        message: 'success',
+        data: this.lastID
     })
-  });
-});
+  })
+})
 
 app.get('/api/groceries/:id', middleware.checkToken, (req, res) => {
   var params = [req.params.id]
-  db.all("SELECT * FROM groceries WHERE fridgeID=?", params, function(err, row){
+  db.all('SELECT * FROM groceries WHERE fridgeID=?', params, function(err, row){
     if (err) {
-      res.status(400).json({"error":err.message});
-      return;
+      res.status(400).json({'error': err.message})
+      return
     }
     res.json({
-        "message":"success",
-        "data":row
+        message: 'success',
+        data: row
     })
-  });
-});
+  })
+})
 
 app.use(
   bodyParser.urlencoded({
@@ -145,59 +145,57 @@ app.use(
 
 app.use(bodyParser.json())
 
-app.use(express.json());
-
 app.post("/api/login", (req, res, next) => {
-    var params = [req.body.username]
-    let username = req.body.username
-    let password = req.body.password
+  var params = [req.body.username]
+  let username = req.body.username
+  let password = req.body.password
 
-    var sql = `select *
-               FROM   users
-               WHERE  email=?`
-    db.all(sql, params, username, password, (err, row) => {
-      if (username && password) {
-        if (username === row[0].email && password === row[0].password) {
-          let token = jwt.sign({username: username},
-            process.env.JWT,
-            { expiresIn: '15m'
-            }
-          )
-          res.json({
-            success: true,
-            message: 'Authentication successful!',
-            token: token
-          })
-        } else {
-          res.json({
-            success: false,
-            message: 'Incorrect username or password'
-          })
-        }
+  var sql = `select *
+             FROM   users
+             WHERE  email=?`
+  db.all(sql, params, username, password, (err, row) => {
+    if (username && password) {
+      if (username === row[0].email && password === row[0].password) {
+        let token = jwt.sign({username: username},
+          process.env.JWT,
+          { expiresIn: '15m'
+          }
+        )
+        res.json({
+          success: true,
+          message: 'Authentication successful!',
+          token: token
+        })
       } else {
         res.json({
           success: false,
-          message: 'Authentication failed! Please check the request'
+          message: 'Incorrect username or password'
         })
       }
-    })
+    } else {
+      res.json({
+        success: false,
+        message: 'Authentication failed! Please check the request'
+      })
+    }
+  })
 })
 
 
 //build mode
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/fridge/build/index.html'));
+  res.sendFile(path.join(__dirname+'/fridge/build/index.html'))
 })
 
 app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname+'/fridge/build/index.html'));
+  res.sendFile(path.join(__dirname+'/fridge/build/index.html'))
 })
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname+'/fridge/build/index.html'));
+  res.sendFile(path.join(__dirname+'/fridge/build/index.html'))
 })
 
 //start server
 app.listen(port, (req, res) => {
-  console.log( `server listening on port: ${port}`);
+  console.log( `server listening on port: ${port}`)
 })

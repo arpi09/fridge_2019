@@ -13,21 +13,21 @@ export const getGroceries = (id) => (dispatch) => {
   let data = {
     method: 'get',
     headers: {
-      'Content-Type':'application/json',
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
   }
   fetch('/api/groceries/' + id, data)
     .then(res => res.json())
     .then(result => {
-      if (result.success) {
+      if (result.message == 'success') {
         dispatch(fetchGroceriesSuccess(result.data))
       } else {
         dispatch(fetchGroceriesError(result.message))
       }
     },
       (error) => {
-        dispatch(fetchGroceriesError())
+        dispatch(fetchGroceriesError(error))
       })
 }
 
@@ -41,9 +41,15 @@ export const fetchAddGroceriesError = () => ({
 })
 
 export const addGroceries = (name, weight, category, expireDate, fridgeID) => (dispatch) => {
-  fetch('/api/groceries/' + name + '/' + weight + '/' + category + '/' + fridgeID + '/' + expireDate, {
-    method: 'post'
-  })
+  let token = sessionStorage.getItem("jwt")
+  let data = {
+    method: 'post',
+    headers: {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+  }
+  fetch('/api/groceries/' + name + '/' + weight + '/' + category + '/' + fridgeID + '/' + expireDate, data)
     .then(res => res.json())
     .then(result => {
       dispatch(fetchAddGroceriesSuccess(result.data))
@@ -64,9 +70,15 @@ export const fetchRemoveGroceriesError = (message) => ({
 })
 
 export const removeGroceries = (id) => (dispatch) => {
-  fetch('/api/groceries/' + id, {
-    method: 'delete'
-  })
+  let token = sessionStorage.getItem("jwt")
+  let data = {
+    method: 'delete',
+    headers: {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+  }
+  fetch('/api/groceries/' + id, data)
     .then(res => res.json())
     .then(result => {
       if (result.success) {
