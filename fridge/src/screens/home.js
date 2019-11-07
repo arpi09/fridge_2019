@@ -91,7 +91,7 @@ const { button, numbers, numbersBig, headerText } = styles
 class Home extends Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       groceryName: "",
       groceryWeight: 0,
@@ -151,7 +151,7 @@ class Home extends Component {
             <Button style={{color: "#3C91E6"}} onClick={ () => { this.handleForm() }}>
               ADD
             </Button>
-          );
+          )
         }
       },
       open: false,
