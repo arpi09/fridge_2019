@@ -1,4 +1,5 @@
 const express = require('express')
+require("dotenv").config();
 const app = express()
 const path = require('path')
 const port = process.env.PORT || 5000
@@ -153,6 +154,9 @@ app.post("/api/login", (req, res, next) => {
              FROM   users
              WHERE  email=?`
   db.all(sql, params, username, password, (err, row) => {
+    console.log(username)
+    console.log(password)
+    console.log(process.env.JWT)
     if (username && password) {
       if (username === row[0].email && password === row[0].password) {
         let token = jwt.sign({username: username},

@@ -1,3 +1,4 @@
+require("dotenv").config();
 let jwt = require('jsonwebtoken')
 
 let checkToken = (req, res, next) => {
