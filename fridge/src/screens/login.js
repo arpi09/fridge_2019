@@ -68,7 +68,7 @@ class Login extends Component {
   async onPresslogin() {
     this.setState({
       isLoading: true,
-    })
+    });
     await this.props.login(this.state.email, this.state.password)
   }
 

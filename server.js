@@ -7,6 +7,7 @@ var sqlite3 = require('sqlite3').verbose()
 var db = new sqlite3.Database('./database.sqlite')
 let jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
+// let config = require('./config')
 let middleware = require('./middleware')
 
 app.use(express.static(path.join(__dirname, 'fridge/build')))

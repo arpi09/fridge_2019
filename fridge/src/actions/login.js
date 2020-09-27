@@ -23,7 +23,7 @@ export const login = (email, password) => (dispatch) => {
     .then(res => res.json())
     .then(result => {
       if (result.success) {
-          sessionStorage.setItem("jwt", result.token)
+          sessionStorage.setItem("jwt", result.token);
           dispatch(fetchLoginSuccess())
       } else {
         dispatch(fetchLoginError())
