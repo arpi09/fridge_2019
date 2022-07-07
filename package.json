@@ -27,7 +27,7 @@
     "heroku": "^7.43.2",
     "jsonwebtoken": "^8.5.1",
     "material-table": "^1.69.0",
-    "moment": "^2.29.0",
+    "moment": "^2.29.4",
     "mui-datatables": "^2.15.0",
     "nodemon": "^1.19.4",
     "react": "^16.13.1",
